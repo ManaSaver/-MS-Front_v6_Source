@@ -1,0 +1,52 @@
+/*
+    ----> SIDEBAR:
+    Оці стилі треба копіювати для двохколоночного виду:
+*/
+::-webkit-scrollbar { width: 14px; }
+::-webkit-scrollbar-track { -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset; }
+::-webkit-scrollbar-thumb { background: #9171dc; }
+.outer { display: flex; height: 100%; width: calc(100vw - 14px); /* 14px це ширина скролбара */ }
+.inner { display: flex; flex-grow: 1; }
+.content { display: flex; flex-direction: column; flex: 1; }
+
+.sidebar { display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid #d8dee4; }
+.sidebar-inner { display: flex; flex-direction: column;  }
+.fixed {
+    flex: 0 0 300px; height: calc(100vh - 37px);
+    overflow-y: auto; overflow-x: hidden; position: sticky;
+    top: 0; transition: flex .2s ease-out;
+}
+
+@media (max-width:961px)
+{
+    .fixed { flex: 0 0 40px; }
+    .sidebar-inner { display: none; }
+}
+
+.sidebar-left { flex-direction: row-reverse; }
+.sidebar-right { flex-direction: row; }
+/*
+    <- оці стилі
+    <---- SIDEBAR
+*/
+
+.sidebar-content {
+    margin: 10px 0px;
+}
+
+.sidebar-title-outer {
+    margin: 5px 0px;
+}
+
+.first-level-title {
+    font-size: 15px;
+    font-family: "OpenSans-Bold",sans-serif;
+   /* letter-spacing: 0.15px;*/
+}
+
+.second-level-title {
+    font-size: 13px;
+    font-family: "OpenSans", sans-serif;
+    letter-spacing: 0.19px;
+}
+

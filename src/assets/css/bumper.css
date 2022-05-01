@@ -1,0 +1,13 @@
+.bumper-left {
+    width: 42px;
+    flex: 0 0 42px;
+}
+
+.bumper-middle {
+    flex: 1;
+}
+
+.bumper-right {
+    width: 42px;
+    flex: 0 0 42px;
+}

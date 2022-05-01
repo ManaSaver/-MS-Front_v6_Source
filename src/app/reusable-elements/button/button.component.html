@@ -1,0 +1,30 @@
+<div class="button-outer" #button
+
+     (mouseenter)="hover()"
+     (mouseleave) ="leave()"
+
+     (mousedown)="onClick()"
+     (mouseup)="unClicked()"
+
+     (touchstart)="onTouchStart()"
+
+     (touchend)="unClicked(); onTouchEnd();"
+     (touchcancel)="unClicked(); onTouchEnd()"
+     (touchmove)="unClicked()"
+     (drag)="unClicked()"
+
+>
+
+    <div class="button-inner" [ngClass]="[color, size]">
+        <div class="button-icon"
+             [class.onlyIcon]="text == null"
+             *ngIf="icon_name != null"
+             [innerHTML]="IconService.icons[icon_name].svg | safeHtml"
+        >
+        </div>
+        <div class="button-text" *ngIf="text != null">
+            {{text}}
+        </div>
+    </div>
+
+</div>

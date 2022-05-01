@@ -1,0 +1,41 @@
+<router-outlet></router-outlet>
+
+<div class="footer">
+    <div class="space-between disable-text-selection">
+        <div class="backups centered" style="width: 80px;">
+            <div class="centered pointer rotating" [innerHTML]="ItemService.IconService.icons.reload.svg | safeHtml" *ngIf="ItemService.itemsAreBackuping"></div>
+            <div class="centered pointer" [innerHTML]="ItemService.IconService.icons.backup.svg | safeHtml" (click)="ItemService.backup()" *ngIf="!ItemService.itemsAreBackuping"></div>
+
+        </div>
+
+        <div class="copyright">
+            <div class="build">
+                <div class="build-text">version</div>
+                <div class="build-version">{{ItemService.ConfigService.msVersion}}</div>
+            </div>
+        </div>
+
+        <div class="backups rows" style="width: 150px;">
+            <div class="centered pointer" [innerHTML]="ItemService.IconService.icons.db_name.svg | safeHtml" (click)="ItemService.ConfigService.toggleEditDatabase()"></div>
+            <div class="centered pointer" (click)="ItemService.ConfigService.toggleEditDatabase()">{{ItemService.ConfigService.database}}</div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="window-edit-database columns" *ngIf="ItemService.ConfigService.editDatabaseWindow">
+    <div class="window-edit-database-title" style="padding: 3px">
+        Назва бази даних:
+    </div>
+    <div class="window-edit-database-title">
+        <input type="text" [(ngModel)]="ItemService.ConfigService.database" (change)="ItemService.ConfigService.saveDBtoLocalStorage()">
+    </div>
+</div>
+
+
+<div class="sticky-menu columns centered">
+    <div class="pointer" [innerHTML]="ItemService.IconService.icons.arrow_up.svg | safeHtml"></div>
+    <div class="pointer" [innerHTML]="ItemService.IconService.icons.search.svg | safeHtml" (click)="goToSearchPage()"></div>
+    <!-- <div class="pointer" [innerHTML]="ItemService.IconService.icons.backup.svg | safeHtml"></div> -->
+</div>

@@ -1,0 +1,139 @@
+.create-outer {
+    margin: 0px 20px 0px 0px;
+    border-radius: 7px;
+}
+
+.title-create-outer {
+    border-right: 1px solid #dadee3;
+}
+
+.paragraph-create-outer {
+    border-right: 1px solid #dadee3;
+}
+
+.edit-paragraph-outer {
+    margin: 0px 20px 0px 20px;
+    padding: 10px 0px;
+}
+
+.paragraph-bg {
+    background-color: #efefef;
+}
+
+
+.window-title {
+    background-color: #a3abd1;
+    border-top: 2px solid #8f97b9;
+    border-left: 2px solid #8f97b9;
+    border-right: 2px solid #8f97b9;
+    border-bottom: 1px solid #8f97b9;
+    color: #fff;
+    font-family: "Open Sans", sans-serif;
+    font-size: 18px;
+    border-radius: 7px 7px 0px 0px;
+    padding: 10px 0px;
+    font-weight: 700;
+    text-shadow: 1px 1px #374276;
+}
+
+.window-body {
+    background-color: #fff;
+    border-left: 2px solid #eaeaea;
+    border-right: 2px solid #eaeaea;
+}
+
+.window-footer {
+    background-color: #f5f5f5;
+    color: #fff;
+    font-family: "Open Sans", sans-serif;
+    border-radius: 0px 0px 7px 7px;
+    padding: 15px 0px;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 2px solid #d5d5d5;
+    border-left: 1px solid #eaeaea;
+    border-right: 1px solid #eaeaea;
+}
+
+.form-title {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    margin: 2px 0px;
+    letter-spacing: 0.21px;
+}
+
+
+.meta-title {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    margin: 2px 0px;
+    letter-spacing: 0.21px;
+}
+
+
+.stage {
+    margin: 5px 0px;
+}
+
+.stage-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.stage-left {
+    min-width: 100px;
+}
+
+.stage-right {
+    margin: 0px 0px 0px 10px;
+}
+
+.default-button {
+    border-radius: 3px;
+    margin: 2px 2px;
+}
+
+
+input[type=text]  {
+    border-radius: 0;
+    box-shadow: none;
+    border-color: #d2d6de;
+
+    display: block;
+    width: 100%;
+    padding: 4px 7px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+    min-width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.button-text {
+    margin: 0px 5px 0px 0px
+}
+
+
+.rotateLeft {
+    transform: rotate(270deg);
+}
+
+.rotateRight {
+    transform: rotate(90deg);
+}
+
+.code-tag-in-footer {
+    margin: 0px 4px 0px 0px;
+    padding: 2px 9px;
+    border-radius: 4px;
+    border: 1px solid #7780ad;
+    background: #8e96bb;
+    color: #fff;
+}

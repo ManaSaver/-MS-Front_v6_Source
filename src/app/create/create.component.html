@@ -1,0 +1,542 @@
+<ng-container *ngIf="ItemService.MenuService.creating.parent_uuid == item.parent_uuid">
+
+    <div [className]="ItemService.MenuService.creating.parent_uuid == item.parent_uuid ? 'menu active_menu' : 'menu not_active_menu'"
+         [ngClass]="[
+            (parentItem != null && parentItem.type == 'title' ? item.type + '-create-outer' : 'category-create-outer'),
+            ((parentItem == null) ? item.type + '-create-outer' : 'category-create-outer')
+         ]"
+    [style.margin-left]="(ItemService.MenuService.creating.indent_pixels) + 'px'">
+
+        <ng-container *ngIf="position == 'first' && ItemService.MenuService.creating.is_opened">
+            <ng-container *ngIf="ItemService.MenuService.creating.order_index == 0 && item.order_index == 1">
+
+                <!-- шаблон створення категорії: -->
+                <ng-container *ngIf="ItemService.MenuService.creating.type == 'category'">
+                    <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+                </ng-container>
+                <!-- /шаблон створення категорії -->
+
+                <!-- шаблон створення титулу: -->
+                <ng-container *ngIf="ItemService.MenuService.creating.type == 'title'">
+                    <ng-container *ngTemplateOutlet="CreateTitleTemplate"></ng-container>
+                </ng-container>
+                <!-- /шаблон створення титулу -->
+
+                <!-- шаблон створення параграфу: -->
+                <ng-container *ngIf="ItemService.MenuService.creating.type == 'paragraph'">
+                    <div class="paragraph-bg">
+                        <ng-container *ngTemplateOutlet="CreateParagraphTemplate"></ng-container>
+                    </div>
+                </ng-container>
+                <!-- /шаблон створення параграфу -->
+
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="position == 'next' && ItemService.MenuService.creating.is_opened">
+            <ng-container *ngIf="ItemService.MenuService.creating.order_index == item.order_index">
+
+                <!-- шаблон створення категорії: -->
+                <ng-container *ngIf="ItemService.MenuService.creating.type == 'category'">
+                    <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+                </ng-container>
+                <!-- /шаблон створення категорії -->
+
+                <!-- шаблон створення титулу: -->
+                <ng-container *ngIf="ItemService.MenuService.creating.type == 'title'">
+                    <ng-container *ngTemplateOutlet="CreateTitleTemplate"></ng-container>
+                </ng-container>
+                <!-- /шаблон створення титулу -->
+
+                <!-- шаблон створення параграфу: -->
+                <ng-container *ngIf="ItemService.MenuService.creating.type == 'paragraph'">
+                    <div class="paragraph-bg">
+                        <ng-container *ngTemplateOutlet="CreateParagraphTemplate"></ng-container>
+                    </div>
+                </ng-container>
+                <!-- /шаблон створення параграфу -->
+
+
+
+            </ng-container>
+        </ng-container>
+
+    </div>
+</ng-container>
+
+
+<!-- Створення першого дочірнього допису: -->
+<ng-container *ngIf="ItemService.MenuService.creating.parent_uuid == item.uuid">
+
+    <!-- якщо це перший допис -->
+    <ng-container *ngIf="item.children.length == 0">
+        <ng-container *ngIf="position == 'first' && ItemService.MenuService.creating.is_opened">
+
+            <!-- шаблон створення категорії: -->
+            <ng-container *ngIf="ItemService.MenuService.creating.type == 'category'">
+                <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+            </ng-container>
+            <!-- /шаблон створення категорії -->
+
+            <!-- шаблон створення титулу: -->
+            <ng-container *ngIf="ItemService.MenuService.creating.type == 'title'">
+                <!--<ng-container *ngTemplateOutlet="CreateTitleTemplate"></ng-container>-->
+            </ng-container>
+            <!-- /шаблон створення титулу -->
+
+            <!-- шаблон створення параграфу: -->
+            <ng-container *ngIf="ItemService.MenuService.creating.type == 'paragraph'">
+                <!--- <ng-container *ngTemplateOutlet="CreateParagraphTemplate"></ng-container> -->
+            </ng-container>
+            <!-- /шаблон створення параграфу -->
+
+        </ng-container>
+    </ng-container>
+    <!-- /якщо це перший допис -->
+
+    <ng-container *ngIf="position == 'child' && ItemService.MenuService.creating.is_opened">
+        <ng-container *ngIf="ItemService.MenuService.creating.order_index == 0">
+
+            <!-- шаблон створення категорії: -->
+            <ng-container *ngIf="ItemService.MenuService.creating.type == 'category'">
+                <div [style.margin-left]="(ItemService.MenuService.creating.indent_pixels) + 'px'">
+                    <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+                </div>
+            </ng-container>
+            <!-- /шаблон створення категорії -->
+
+            <!-- шаблон створення титулу: -->
+            <ng-container *ngIf="ItemService.MenuService.creating.type == 'title'">
+                <div [style.margin-left]="(ItemService.MenuService.creating.indent_pixels) + 'px'"
+                     [ngClass]="[
+                    ((parentItem == null) ? item.type + '-create-outer' : 'category-create-outer')
+                 ]">
+                    <ng-container *ngTemplateOutlet="CreateTitleTemplate"></ng-container>
+                </div>
+            </ng-container>
+            <!-- /шаблон створення титулу -->
+
+            <!-- шаблон створення параграфу: -->
+            <ng-container *ngIf="ItemService.MenuService.creating.type == 'paragraph'">
+                <div class="paragraph-bg">
+                    <ng-container *ngTemplateOutlet="CreateParagraphTemplate"></ng-container>
+                </div>
+            </ng-container>
+            <!-- /шаблон створення параграфу -->
+        </ng-container>
+
+        <!-- шаблон створення коду: -->
+        <ng-container *ngIf="ItemService.MenuService.creating.type == 'code'">
+            <ng-container *ngTemplateOutlet="CreateCodeTemplate"></ng-container>
+        </ng-container>
+        <!-- /шаблон створення коду -->
+
+    </ng-container>
+
+</ng-container>
+<!-- /Створення першого дочірнього допису -->
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------>
+
+
+<!--- Титул вікна створення: --->
+<ng-template #CreatingWindowHeaderTemplate let-windowTitle="windowTitle">
+    <div class="centered window-title">
+        {{windowTitle}}
+    </div>
+</ng-template>
+<!--- / Титул вікна створення --->
+
+<!--- Кнопки вікна створення: --->
+<ng-template #CreatingWindowButtonsTemplate>
+    <div class="space-between window-footer" *ngIf="!ItemService.MenuService.creating.is_creating">
+        <app-button style="margin: 0px 20px;" class="menu-button" [text]="'Створити'" [color]="'green'" [icon_name]="'confirm'" (click)="create()"></app-button>
+        <app-button style="margin: 0px 20px;" class="menu-button" [text]="'Відміна'" [color]="'red'" [icon_name]="'cancel'" (click)="ItemService.MenuService.closeCreating()"></app-button>
+    </div>
+</ng-template>
+<!--- / Кнопки вікна створення --->
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------>
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН СТВОРЕННЯ КАТЕГОРІЇ
+-->
+
+<ng-template #CreateCategoryTemplate>
+    <div class="columns create-outer" [style.margin-left]="((indent > 1 ? indent : 0 ) * 28) + 'px'">
+
+        <!--- Титул вікна створення: --->
+        <ng-container *ngTemplateOutlet="CreatingWindowHeaderTemplate; context:{ windowTitle: 'Створення нової категорії'  }"></ng-container>
+        <!--- / Титул вікна створення --->
+
+        <div class="window-body">
+            <div class="space-between" style="margin: 20px 17px;">
+                <div class="columns" style="width: 300px;">
+
+                    <!-- Заголовок категорії: -->
+                    <div class="columns stage">
+                        <div class="vertically-centered form-title">Title:</div>
+                        <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.title"></div>
+                    </div>
+                    <!-- /Заголовок категорії -->
+
+                    <!-- Опис категорії: -->
+                    <div class="columns stage">
+                        <div class="vertically-centered form-title">Description:</div>
+                        <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.text"></div>
+                    </div>
+                    <!-- / Опис категорії -->
+
+                    <!-- Опис категорії: -->
+                    <div class="columns stage">
+                        <div class="vertically-centered form-title">Options:</div>
+                        <div class="flex-grow">
+                            <div class="rows pointer disable-text-selection">
+                                <input type="checkbox" checked="" [(ngModel)]="isLast" id="last" class="pointer">
+                                <label for="last" class="centered pointer">Last</label>
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="rows disable-text-selection">
+                                <input type="checkbox" checked="" [(ngModel)]="isCollapsed" id="collapsed" class="pointer">
+                                <label for="collapsed" class="centered pointer">Collapse</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Опис категорії -->
+
+                </div>
+
+                <div class="rows-end" style="margin-top: 20px;">
+                    <div class="columns">
+
+                        <div class="columns stage">
+                            <div class="meta-title">Parent:</div>
+                            <div class="meta-value">
+                                <ng-container *ngIf="parentItem != null">
+                                        {{parentItem.title}}
+                                </ng-container>
+                                <ng-container *ngIf="item.parent_uuid == null">Mana Saver</ng-container>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="prevItem != null">
+                            <div class="columns stage">
+                                <div class="meta-title">Prev:</div>
+                                <div class="meta-value">
+                                        {{prevItem.title}}
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="nextItem != null">
+                            <div class="columns stage">
+                                <div class="meta-title">Next:</div>
+                                <div class="meta-value">
+                                        {{nextItem.title}}
+                                </div>
+                            </div>
+                        </ng-container>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--- Кнопки вікна створення: --->
+        <ng-container *ngTemplateOutlet="CreatingWindowButtonsTemplate"></ng-container>
+        <!--- / Кнопки вікна створення --->
+
+
+
+        <div class="space-between stage" *ngIf="ItemService.MenuService.creating.is_creating">
+            <div class="">Обробка запиту...</div>
+        </div>
+
+        <div class="space-between stage" *ngIf="formHasErrors">
+            <div class="" *ngIf="titleError.length > 0">{{titleError}}</div>
+        </div>
+
+    </div>
+</ng-template>
+<!--
+   / ШАБЛОН СТВОРЕННЯ КАТЕГОРІЇ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН СТВОРЕННЯ ТИТУЛУ
+-->
+
+<ng-template #CreateTitleTemplate>
+    <div class="flex-grow columns create-outer" style="padding-top: 20px;">
+
+        <!--- Титул вікна створення: --->
+        <ng-container *ngTemplateOutlet="CreatingWindowHeaderTemplate; context:{ windowTitle: 'Створення нового титулу'  }"></ng-container>
+        <!--- / Титул вікна створення --->
+
+        <div class="window-body">
+            <div class="space-between" style="margin: 20px 17px;">
+                <div class="columns" style="width: 300px;">
+
+                    <!-- Заголовок титулу: -->
+                    <div class="columns stage">
+                        <div class="vertically-centered form-title">Title:</div>
+                        <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.title"></div>
+                    </div>
+                    <!-- /Заголовок титулу -->
+
+                </div>
+
+                <div class="rows-end" style="margin-top: 20px;">
+                    <div class="columns">
+
+                        <ng-container *ngIf="parentItem != null">
+                            <div class="columns stage">
+                                <div class="meta-title">Parent:</div>
+                                <div class="meta-value">
+                                        {{parentItem.title}}
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="item.parent_uuid == null">
+                            <div class="columns stage">
+                                <div class="meta-title">Parent:</div>
+                                <div class="meta-value">
+                                        Mana Saver
+                                </div>
+                            </div>
+                        </ng-container>
+
+
+                        <ng-container *ngIf="prevItem != null">
+                            <div class="columns stage">
+                                <div class="meta-title">Prev:</div>
+                                <div class="meta-value">
+                                    {{prevItem.title}}
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="nextItem != null">
+                            <div class="columns stage">
+                                <div class="meta-title">Next:</div>
+                                <div class="meta-value">
+                                    {{nextItem.title}}
+                                </div>
+                            </div>
+                        </ng-container>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--- Кнопки вікна створення: --->
+        <ng-container *ngTemplateOutlet="CreatingWindowButtonsTemplate"></ng-container>
+        <!--- / Кнопки вікна створення --->
+
+
+
+        <div class="space-between stage" *ngIf="ItemService.MenuService.creating.is_creating">
+            <div class="">Обробка запиту...</div>
+        </div>
+
+        <div class="space-between stage" *ngIf="formHasErrors">
+            <div class="" *ngIf="titleError.length > 0">{{titleError}}</div>
+        </div>
+
+    </div>
+</ng-template>
+<!--
+   / ШАБЛОН СТВОРЕННЯ ТИТУЛУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН СТВОРЕННЯ ПАРАГРАФУ
+-->
+
+<ng-template #CreateParagraphTemplate>
+
+    <div class="columns create-paragraph-outer">
+
+        <div class="columns stage">
+            <div class="stage-title" style="text-align: center; margin: 8px 0px 17px 0px;">
+                Створення нового параграфу
+            </div>
+        </div>
+
+        <app-tinymce [text]="newItem.text ?? ''"></app-tinymce>
+
+        <div class="rows stage" style="margin: 8px 0px 27px 0px;">
+            <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                Вміст:
+            </div>
+            <div class="flex-grow stage-right">
+                <select [(ngModel)]="paragraphContains">
+                    <option [value]="1" [selected]="paragraphContains == 1">Нічого</option>
+                    <option [value]="2" [selected]="paragraphContains == 2">З кодами</option>
+                    <option [value]="3" [selected]="paragraphContains == 3">З файлами</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="space-between stage" *ngIf="!ItemService.MenuService.creating.is_creating">
+            <app-button class="menu-button" [text]="'Створити'" [color]="'green'" [icon_name]="'confirm'" (click)="create()"></app-button>
+            <app-button class="menu-button" [text]="'Відміна'" [color]="'red'" [icon_name]="'cancel'" (click)="ItemService.MenuService.closeCreating()"></app-button>
+        </div>
+
+        <div class="space-between stage" *ngIf="ItemService.MenuService.creating.is_creating">
+            <div class="">Обробка запиту...</div>
+        </div>
+
+        <div class="space-between stage" *ngIf="formHasErrors">
+            <div class="" *ngIf="titleError.length > 0">{{titleError}}</div>
+        </div>
+
+
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН СТВОРЕННЯ ПАРАГРАФУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН СТВОРЕННЯ КОДУ
+-->
+
+<ng-template #CreateCodeTemplate>
+
+    <div class="flex-grow columns code-create-outer" style="padding-top: 20px;">
+
+        <!--- Титул вікна створення: --->
+        <ng-container *ngTemplateOutlet="CreatingWindowHeaderTemplate; context:{ windowTitle: 'Створення нового коду' }"></ng-container>
+        <!--- / Титул вікна створення --->
+
+        <div class="window-body">
+            <div class="space-between" style="margin: 20px 17px;">
+                <div class="columns flex-grow" style="width: 300px;">
+
+                    <!-- Заголовок титулу: -->
+                    <div class="columns stage">
+                        <div class="vertically-centered form-title">Title:</div>
+                        <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.title"></div>
+                    </div>
+                    <!-- /Заголовок титулу -->
+
+                    <!-- Мова: -->
+                    <div class="columns stage">
+                        <div class="vertically-centered form-title">Мова:</div>
+                        <div class="flex-grow">
+                            <select [(ngModel)]="newItem.src" (change)="switchEditorLang()">
+                                <option [value]="lang" *ngFor="let lang of ItemService.codeLanguages">{{lang}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- / Мова -->
+
+                    <!-- Теги: -->
+                    <div class="columns stage">
+                        <div class="vertically-centered form-title">Теги:</div>
+                        <div class="flex-grow">
+                            <input type="text" class="input_text" [(ngModel)]="tagsString" (keyup)="changeTagsString()">
+                        </div>
+                    </div>
+                    <!-- /Теги -->
+
+                    <!-- Теги: -->
+                    <div class="rows">
+                        <div class="code-tag-in-footer" *ngFor="let tag of tagsArray" style="">
+                            {{tag}}
+                        </div>
+                    </div>
+                    <!-- /Теги -->
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="rows" style="border-left: 2px solid #eaeaea; border-right: 2px solid #eaeaea; border-top: 1px solid #eaeaea;">
+            <ngx-codemirror style="width:100%; line-height: 130%;"
+                            [(ngModel)]="code"
+                            [options]="editorOptions"
+            ></ngx-codemirror>
+        </div>
+
+        <!--- Кнопки вікна створення: --->
+        <ng-container *ngTemplateOutlet="CreatingWindowButtonsTemplate"></ng-container>
+        <!--- / Кнопки вікна створення --->
+
+        <div class="space-between stage" *ngIf="ItemService.MenuService.creating.is_creating">
+            <div class="">Обробка запиту...</div>
+        </div>
+
+        <div class="space-between stage" *ngIf="formHasErrors">
+            <div class="" *ngIf="titleError.length > 0">{{titleError}}</div>
+        </div>
+
+    </div>
+
+
+
+
+</ng-template>
+<!--
+   / ШАБЛОН СТВОРЕННЯ КОДУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->

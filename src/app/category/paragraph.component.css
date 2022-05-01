@@ -1,0 +1,23 @@
+.paragraph-outer {
+    margin: 0px;
+   /* position: relative;*/
+}
+
+.paragraph-content {
+    background-color: #fff;
+    padding: 3px 20px 0px 20px;
+    font-family: "Open Sans",sans-serif;
+    font-size: 15px;
+    letter-spacing: -.21px;
+    line-height: 150%;
+}
+
+.paragraph-bumper-right {
+    width: 60px;
+    border-right: 1px solid #dadee3;
+}
+
+.paragraph-menu-button-outer {
+    border-left: 1px solid #fff;
+    border-right: 1px solid #fff;
+}

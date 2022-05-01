@@ -1,0 +1,551 @@
+
+<div
+
+    [ngClass]="['title-create-outer', ItemService.MenuService.editing.uuid == item.uuid ? 'menu active_menu' : 'menu not_active_menu']"
+     [style.margin-left]="(indent * 20) + 'px'"
+
+>
+
+    <ng-container *ngIf="ItemService.MenuService.editing.is_opened && ItemService.MenuService.editing.uuid == item.uuid">
+
+            <!-- Режим редагування: -->
+            <ng-container *ngIf="!ItemService.MenuService.editing.deleting_mode">
+                <ng-container *ngTemplateOutlet="EditModeTemplate"></ng-container>
+            </ng-container>
+            <!-- /Режим редагування: -->
+
+
+            <!-- Режим видалення: -->
+            <ng-container *ngIf="ItemService.MenuService.editing.deleting_mode">
+                <ng-container *ngTemplateOutlet="DeleteModeTemplate"></ng-container>
+            </ng-container>
+            <!-- /Режим видалення -->
+
+    </ng-container>
+</div>
+
+
+<!--- Титул вікна: --->
+<ng-template #WindowHeaderTemplate let-windowTitle="windowTitle" let-top="top">
+    <div class="centered window-title" [style.margin-top]="top">
+        {{windowTitle}}
+    </div>
+</ng-template>
+<!--- / Титул вікна --->
+
+
+
+<!--- Кнопки вікна редагування: --->
+<ng-template #DeletingWindowButtonsTemplate>
+    <div class="space-between window-footer" *ngIf="!ItemService.MenuService.editing.is_updating">
+        <app-button style="margin: 5px 20px" [text]="'Знищити'" [icon_name]="'confirm'" [color]="'green'" (click)="confirmDeleteRequest()"></app-button>
+        <app-button style="margin: 5px 20px" [text]="'Відміна'" [icon_name]="'cancel'" [color]="'red'" (click)="cancelDeleteRequest()"></app-button>
+    </div>
+</ng-template>
+<!--- / Кнопки вікна редагування --->
+
+
+<!--- Кнопки вікна видалення: --->
+<ng-template #EditingWindowButtonsTemplate>
+    <div class="space-between window-footer" *ngIf="!ItemService.MenuService.editing.is_updating">
+        <app-button style="margin: 5px 20px" [text]="'Зберегти'" [icon_name]="'confirm'" [color]="'green'" (click)="save()"></app-button>
+        <app-button style="margin: 5px 20px" [text]="'Відміна'" [icon_name]="'cancel'" [color]="'red'" (click)="ItemService.MenuService.closeEditing()"></app-button>
+    </div>
+</ng-template>
+<!--- / Кнопки вікна видалення --->
+
+
+
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН ВИДАЛЕННЯ ДОПИСУ
+-->
+<ng-template #DeleteModeTemplate>
+
+    <div class="columns create-outer" style="padding-top: 20px;">
+
+        <!--- Титул вікна редагування: --->
+            <ng-container *ngTemplateOutlet="WindowHeaderTemplate; context:{ windowTitle: 'Видалення' }"></ng-container>
+        <!--- / Титул вікна редагування --->
+
+        <div class="window-body">
+            <div class="space-between" style="margin: 20px 17px;">
+                <div class="columns" *ngIf="item.children.length > 0">
+                    <div class="stage">Точно знищити <b>{{item.type}}</b>? Крім цього буде видалено і дочірні дописи:</div>
+                    <ng-container *ngTemplateOutlet="DelChildItem; context:{ children: item.children }"></ng-container>
+                </div>
+
+                <div class="columns" *ngIf="item.children.length == 0">
+                    <div class="stage" *ngIf="item.type == 'category'">Точно знищити <b>{{item.type}}</b>? (дочірніх дописів нема або вона не завантажені, якщо це категорія)</div>
+                    <div class="stage" *ngIf="item.type != 'category'">Точно знищити <b>{{item.type}}</b>? (дочірніх дописів нема)</div>
+                </div>
+            </div>
+        </div>
+
+        <!--- Кнопки: --->
+        <ng-container *ngTemplateOutlet="DeletingWindowButtonsTemplate"></ng-container>
+        <!--- / Кнопки --->
+
+    </div>
+
+</ng-template>
+
+<ng-template #DelChildItem let-children="children">
+
+    <div class="columns" *ngFor="let child of children">
+        {{child.uuid}} ({{child.type}})
+        <ng-container *ngTemplateOutlet="DelChildItem; context:{ children: child.children }"></ng-container>
+    </div>
+</ng-template>
+
+<!--
+   / ШАБЛОН ВИДАЛЕННЯ ДОПИСУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН РЕДАГУВАННЯ ДОПИСУ
+-->
+<ng-template #EditModeTemplate>
+
+
+    <div class="columns create-outer"
+        [style.margin-bottom]="newItem.type == 'category' ? '20px' : '0px'"
+    >
+        <ng-container *ngIf="newItem.type == 'category'">
+            <ng-container *ngTemplateOutlet="editCategoryTemplate"></ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="newItem.type == 'title'">
+            <ng-container *ngTemplateOutlet="editTitleTemplate"></ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="newItem.type == 'paragraph'">
+            <div class="paragraph-bg">
+                <ng-container *ngTemplateOutlet="editParagraphTemplate"></ng-container>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="newItem.type == 'code'">
+            <ng-container *ngTemplateOutlet="editCodeTemplate"></ng-container>
+        </ng-container>
+
+        <!--- Кнопки: --->
+        <ng-container *ngTemplateOutlet="EditingWindowButtonsTemplate"></ng-container>
+        <!--- / Кнопки --->
+
+        <div class="space-between stage" *ngIf="ItemService.MenuService.editing.is_updating">
+            <div class="">Обробка запиту...</div>
+        </div>
+
+        <div class="space-between stage" *ngIf="formHasErrors">
+            <div class="" *ngIf="titleError.length > 0">{{titleError}}</div>
+        </div>
+
+    </div>
+</ng-template>
+
+<!--
+   / ШАБЛОН РЕДАГУВАННЯ ДОПИСУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН РЕДАГУВАННЯ КАТЕГОРІЇ
+-->
+<ng-template #editCategoryTemplate>
+
+    <!--- Титул вікна редагування: --->
+        <ng-container *ngTemplateOutlet="WindowHeaderTemplate; context:{ windowTitle: 'Редагування категорії', top: '0px' }"></ng-container>
+    <!--- / Титул вікна редагування --->
+
+
+    <div class="window-body">
+        <div class="space-between" style="margin: 20px 17px;">
+            <div class="columns" style="width: 300px;">
+
+                <!-- Заголовок категорії: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Title:</div>
+                    <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.title"></div>
+                </div>
+                <!-- /Заголовок категорії -->
+
+                <!-- Опис категорії: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Description:</div>
+                    <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.text"></div>
+                </div>
+                <!-- / Опис категорії -->
+
+                <!-- Опис категорії: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Options:</div>
+                    <div class="flex-grow">
+                        <div class="rows pointer disable-text-selection">
+                            <input type="checkbox" checked="" [(ngModel)]="isLast" id="last" class="pointer">
+                            <label for="last" class="centered pointer">Last</label>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="rows disable-text-selection">
+                            <input type="checkbox" checked="" [(ngModel)]="isCollapsed" id="collapsed" class="pointer">
+                            <label for="collapsed" class="centered pointer">Collapse</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- / Опис категорії -->
+
+            </div>
+
+            <div class="columns">
+
+                <!--- Кнопки переміщення і видалення: --->
+                <div class="rows-end">
+                    <div class="rows" style="margin-right: 30px;">
+                        <app-button style="margin: 0px 2px;" [icon_name]="'arrow_up'" [size]="'nano'" [color]="item.order_index == 1 ? 'transparent' : 'gray'" (click)="moveUp()"></app-button>
+                        <app-button style="margin: 0px 2px;" [icon_name]="'arrow_down'" [size]="'nano'" [color]="item.order_index == lastOrderIndex ? 'transparent' : 'gray'" (click)="moveDown()"></app-button>
+                    </div>
+
+                    <div class="columns">
+                        <app-button [text]="'Знищити'" [icon_name]="'trash'" [color]="'gray'" (click)="ItemService.MenuService.openDeleting(item.uuid)"></app-button>
+                    </div>
+                </div>
+                <!--- / Кнопки переміщення і видалення --->
+
+                <div class="rows-end" style="margin-top: 20px;">
+                    <div class="columns">
+
+                        <div class="columns stage">
+                            <div class="meta-title">uuid:</div>
+                            <div class="meta-value">{{item.uuid}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">last_update:</div>
+                            <div class="meta-value">{{item.updated_at}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">order_index:</div>
+                            <div class="meta-value">{{item.order_index}}</div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН РЕДАГУВАННЯ КАТЕГОРІЇ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН РЕДАГУВАННЯ ТИТУЛУ
+-->
+<ng-template #editTitleTemplate>
+
+    <!--- Титул вікна редагування: --->
+    <ng-container *ngTemplateOutlet="WindowHeaderTemplate; context:{ windowTitle: 'Редагування титулу', top: '20px' }"></ng-container>
+    <!--- / Титул вікна редагування --->
+
+
+    <div class="window-body">
+        <div class="space-between" style="margin: 20px 17px;">
+            <div class="columns" style="width: 300px;">
+
+                <!-- Заголовок Редагування титулу: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Title:</div>
+                    <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.title"></div>
+                </div>
+                <!-- /Заголовок Редагування титулу-->
+
+
+            </div>
+
+            <div class="columns">
+
+                <!--- Кнопки переміщення і видалення: --->
+                <div class="rows-end">
+                    <div class="rows" style="margin-right: 30px;">
+                        <app-button style="margin: 0px 2px;" [icon_name]="'arrow_up'" [size]="'nano'" [color]="item.order_index == 1 ? 'transparent' : 'gray'" (click)="moveUp()"></app-button>
+                        <app-button style="margin: 0px 2px;" [icon_name]="'arrow_down'" [size]="'nano'" [color]="item.order_index == lastOrderIndex ? 'transparent' : 'gray'" (click)="moveDown()"></app-button>
+                    </div>
+
+                    <div class="columns">
+                        <app-button [text]="'Знищити'" [icon_name]="'trash'" [color]="'gray'" (click)="ItemService.MenuService.openDeleting(item.uuid)"></app-button>
+                    </div>
+                </div>
+                <!--- / Кнопки переміщення і видалення --->
+
+                <div class="rows-end" style="margin-top: 20px;">
+                    <div class="columns">
+
+                        <div class="columns stage">
+                            <div class="meta-title">uuid:</div>
+                            <div class="meta-value">{{item.uuid}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">last_update:</div>
+                            <div class="meta-value">{{item.updated_at}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">order_index:</div>
+                            <div class="meta-value">{{item.order_index}}</div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</ng-template>
+<!--
+   / ШАБЛОН РЕДАГУВАННЯ ТИТУЛУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН РЕДАГУВАННЯ ПАРАГРАФУ
+-->
+<ng-template #editParagraphTemplate>
+
+    <div class="edit-paragraph-outer">
+        <div class="columns stage">
+            <div class="stage-title" style="text-align: center; margin: 8px 0px 17px 0px;">
+                Редагування параграфу
+            </div>
+        </div>
+
+        <div class="space-between stage">
+            <div class="centered">
+                <div class="" style="margin: 0px 25px 0px 0px"><b>last_update: </b><br> {{item.updated_at}}</div>
+                <div class="" style="margin: 0px 25px 0px 0px"><b>order_index: </b><br> {{item.order_index}}</div>
+                <div class="" style="margin: 0px 25px 0px 0px"><b>uuid: </b><br> {{item.uuid}}</div>
+            </div>
+
+            <div class="rows">
+                <div class="rows" style="margin-right: 30px;">
+                    <app-button class="default-button" [icon_name]="'arrow_up'" [size]="'nano'" [color]="'gray'" (click)="moveUp()"></app-button>
+                    <app-button class="default-button" [icon_name]="'arrow_down'" [size]="'nano'" [color]="'gray'" (click)="moveDown()"></app-button>
+                </div>
+
+                <div class="columns">
+                    <app-button [text]="'Знищити'" [icon_name]="'trash'" [color]="'gray'" (click)="ItemService.MenuService.openDeleting(item.uuid)"></app-button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="" *ngIf="!hideTinyMCE" style="margin-top: 20px;">
+            <app-tinymce [text]="newItem.text ?? ''"></app-tinymce>
+        </div>
+
+        <div class="rows stage" style="margin: 8px 0px 27px 0px;">
+            <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                Вміст:
+            </div>
+            <div class="flex-grow stage-right">
+                <select [(ngModel)]="paragraphContains">
+                    <option [value]="1" [selected]="paragraphContains == 1">Нічого</option>
+                    <option [value]="2" [selected]="paragraphContains == 2">З кодами</option>
+                    <option [value]="3" [selected]="paragraphContains == 3">З файлами</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+</ng-template>
+<!--
+   / ШАБЛОН РЕДАГУВАННЯ ПАРАГРАФУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН РЕДАГУВАННЯ КОДУ
+-->
+<ng-template #editCodeTemplate>
+
+    <!--- Титул вікна редагування: --->
+    <ng-container *ngTemplateOutlet="WindowHeaderTemplate; context:{ windowTitle: 'Редагування коду', top: '20px' }"></ng-container>
+    <!--- / Титул вікна редагування --->
+
+
+    <div class="window-body">
+        <div class="space-between" style="margin: 20px 17px;">
+            <div class="columns flex-grow">
+
+                <!-- Заголовок категорії: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Титул:</div>
+                    <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.title"></div>
+                </div>
+                <!-- /Заголовок категорії -->
+
+                <!-- Мова: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Мова:</div>
+                    <div class="flex-grow">
+                        <select [(ngModel)]="newItem.src" (change)="switchEditorLang()">
+                            <option [value]="lang" *ngFor="let lang of ItemService.codeLanguages">{{lang}}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- / Мова -->
+
+                <!-- Теги: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Теги:</div>
+                    <div class="flex-grow">
+                        <input type="text" class="input_text" [(ngModel)]="tagsString" (keyup)="changeTagsString()">
+                    </div>
+                </div>
+                <!-- /Теги -->
+
+                <!-- Теги: -->
+                <div class="rows">
+                    <div class="code-tag-in-footer" *ngFor="let tag of tagsArray" style="">
+                        {{tag}}
+                    </div>
+                </div>
+                <!-- /Теги -->
+
+
+            </div>
+
+            <div class="columns">
+
+                <!--- Кнопки переміщення і видалення: --->
+                <div class="rows-end">
+                    <div class="rows" style="margin-right: 30px;">
+                        <app-button
+                            class="rotateLeft"
+                            style="margin: 0px 2px;"
+                            [icon_name]="'arrow_up'" [size]="'nano'" [color]="item.order_index == 1 ? 'transparent' : 'gray'"
+                            (click)="moveUp()"></app-button>
+                        <app-button
+                            class="rotateLeft"
+                            style="margin: 0px 2px;"
+                            [icon_name]="'arrow_down'" [size]="'nano'" [color]="item.order_index == lastOrderIndex ? 'transparent' : 'gray'" (click)="moveDown()"></app-button>
+                    </div>
+
+                    <div class="columns">
+                        <app-button [text]="'Знищити'" [icon_name]="'trash'" [color]="'gray'" (click)="ItemService.MenuService.openDeleting(item.uuid)"></app-button>
+                    </div>
+                </div>
+                <!--- / Кнопки переміщення і видалення --->
+
+                <div class="rows-end" style="margin: 10px 0px 0px 15px; padding: 13px; background: #f9f9f9;">
+                    <div class="columns">
+
+                        <div class="columns stage">
+                            <div class="meta-title">uuid:</div>
+                            <div class="meta-value">{{item.uuid}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">last_update:</div>
+                            <div class="meta-value">{{item.updated_at}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">order_index:</div>
+                            <div class="meta-value">{{item.order_index}}</div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="rows" style="border-left: 2px solid #eaeaea; border-right: 2px solid #eaeaea; border-top: 1px solid #eaeaea;">
+        <ngx-codemirror style="width:100%; line-height: 130%;"
+            [(ngModel)]="code"
+            [options]="editorOptions"
+        ></ngx-codemirror>
+    </div>
+
+
+</ng-template>
+<!--
+   / ШАБЛОН РЕДАГУВАННЯ КОДУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->

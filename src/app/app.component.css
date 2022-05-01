@@ -1,0 +1,97 @@
+.footer {
+    background: #222;
+    color: #fff;
+    border-bottom: 4px solid #36b355;
+    padding: 20px 0px 20px 0px;
+
+}
+
+.copyright {
+    display: flex;
+    flex-direction: row;
+}
+
+.year {
+    padding: 2px 5px 2px 5px;
+}
+
+.build {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 0px 0px 10px;
+
+    font-family: DejaVu Sans,Verdana,Geneva,sans-serif;
+    font-size: 11px;
+}
+
+.build:hover {
+    cursor: pointer;
+}
+
+.build-text {
+    padding: 4px 5px 4px 7px;
+    background: #535353;
+    border-radius: 3px 0px 0px 3px;
+
+    text-shadow: 1px 1px 2px #000000;
+    letter-spacing: 0.51px;
+}
+
+.build-version {
+    padding: 4px 7px 4px 5px;
+    background: #0475b5;
+    border-radius: 0px 3px 3px 0px;
+    text-shadow: 1px 1px 2px #000000;
+}
+
+.sticky-menu {
+    position: fixed;
+    bottom: 4px;
+    right: 0px;
+    background-color: #d3d3d3;
+    padding: 3px 2px;
+}
+
+
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+    from {
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes rotating {
+    from {
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+.rotating {
+    -webkit-animation: rotating 2s linear infinite;
+    -moz-animation: rotating 2s linear infinite;
+    -ms-animation: rotating 2s linear infinite;
+    -o-animation: rotating 2s linear infinite;
+    animation: rotating 2s linear infinite;
+}
+
+.window-edit-database {
+    position: fixed;
+    bottom: 77px;
+    right: 40px;
+    background-color: #cdcdcd;
+}

@@ -1,0 +1,868 @@
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   НАВІГАЦІЯ ПО КАТЕГОРІЯХ
+-->
+<div class="bread-crumbs" xmlns="http://www.w3.org/1999/html">
+    <div class="rows">
+        <div class="centered bread-crumbs-button pointer" (click)="goToParentUUID('')">HOME</div>
+
+
+        <ng-container *ngFor="let breadcrumb of ItemService.root.breadcrumbs">
+            <div class="centered bread-crumbs-button pointer" (click)="goToParentUUID(breadcrumb.uuid)">{{textEllipsis(breadcrumb.title, 22)}}</div>
+        </ng-container>
+
+    </div>
+
+</div>
+<!--
+   / НАВІГАЦІЯ ПО КАТЕГОРІЯХ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН СТОРІНКИ
+   2 колонки з можливістю перемикати положення сайдбару
+-->
+<div class="page flex" #page>
+
+
+
+    <div class="content">
+
+        <ng-container *ngIf="ItemService.MenuService.loaders.items_are_loading">
+           <!-- loading-->
+        </ng-container>
+
+        <ng-container *ngIf="ItemService.MenuService.loaders.root_not_found">
+            root_not_found: {{ItemService.root.uuid}}
+        </ng-container>
+
+        <ng-container *ngIf="ItemService.MenuService.loaders.items_already_loaded">
+            <ng-container *ngTemplateOutlet="ContentTemplate"></ng-container>
+        </ng-container>
+
+    </div>
+
+    <div class="sidebar fixed">
+        <div class="sidebar-inner">
+            <div class="sidebar-content">
+                <ng-container *ngTemplateOutlet="SidebarTemplate"></ng-container>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--
+   / ШАБЛОН СТОРІНКИ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН САЙДБАРУ
+-->
+<ng-template #SidebarTemplate>
+    <ng-container *ngIf="this.ItemService.items.hasOwnProperty(this.ItemService.root.uuid)">
+        <ng-container *ngIf="this.ItemService.items[this.ItemService.root.uuid].type == 'category'">
+            <ng-container *ngIf="isArray(this.ItemService.items[this.ItemService.root.uuid].tags)">
+                <ng-container *ngIf="this.ItemService.items[this.ItemService.root.uuid].tags.includes('last')">
+                    <ng-container *ngTemplateOutlet="SidebarItemTemplate; context:{ $implicit: ItemService.root.children, type: 'title', indent: 1  }"></ng-container>
+                </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="!this.ItemService.items[this.ItemService.root.uuid].tags.includes('last')">
+                <ng-container *ngTemplateOutlet="SidebarItemTemplate; context:{ $implicit: ItemService.root.children, type: 'category', indent: 1  }"></ng-container>
+            </ng-container>
+
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="!this.ItemService.items.hasOwnProperty(this.ItemService.root.uuid)">
+        <ng-container *ngTemplateOutlet="SidebarItemTemplate; context:{ $implicit: ItemService.root.children, type: 'category', indent: 1  }"></ng-container>
+    </ng-container>
+
+</ng-template>
+
+<ng-template #SidebarItemTemplate let-array let-type="type" let-indent="indent">
+    <ng-container *ngFor="let item of array">
+        <ng-container *ngIf="item.type == type">
+            <div class="sidebar-title-outer disable-text-selection">
+                <div class="sidebar-title-indent" [style]="'width: ' + indent * 15 + 'px;'"></div>
+                <div [style.margin-left]="indent * 20 + 'px'" [class.first-level-title]="indent == 1" [class.second-level-title]="indent > 1" class="pointer">{{item.title}}</div>
+                <ng-container *ngIf="item.type == 'title'">
+                    <ng-container *ngTemplateOutlet="SidebarItemTemplate; context:{ $implicit: item.children, type: item.type, indent: indent + 1  }"></ng-container>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+</ng-template>
+<!--
+   / ШАБЛОН САЙДБАРУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН КОНТЕНТУ
+-->
+<ng-template #ContentTemplate>
+
+    <ng-container *ngTemplateOutlet="CategoryHeaderTemplate"></ng-container>
+
+    <ng-container *ngIf="ItemService.root.children.length == 0">
+        <ng-container *ngIf="ItemService.MenuService.creating.is_opened">
+            <!-- Створення першого допису (у порожній категорії) : -->
+            <app-create [item]="ItemService.items[ItemService.root.uuid]" [indent]="1" [position]="'child'"></app-create>
+            <!-- / Створення першого допису (у порожній категорії) -->
+
+        </ng-container>
+    </ng-container>
+
+
+
+
+
+
+    <div *ngFor="let item of ItemService.root.children">
+
+        <ng-container *ngIf="item.type == 'category'">
+            <ng-container *ngTemplateOutlet="CategoryTemplate; context:{ $implicit: item, indent: 1  }"></ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="item.type == 'title'">
+            <ng-container *ngTemplateOutlet="TitleTemplate; context:{ $implicit: item, indent: 0  }"></ng-container>
+        </ng-container>
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН КОНТЕНТУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН ХЕДЕРУ КАТЕГОРІЇ
+-->
+<ng-template #CategoryHeaderTemplate>
+
+        <div class="columns centered category-header">
+
+            <div *ngIf="ItemService.items.hasOwnProperty(ItemService.root.uuid); else mainPageTitle">
+                <ng-container>
+                <div class="centered category-header-title">
+                    {{ItemService.items[ItemService.root.uuid].title}}
+                </div>
+                <div class="centered category-header-description">
+                    {{ItemService.items[ItemService.root.uuid].text}}
+                </div>
+                </ng-container>
+            </div>
+
+            <ng-template #mainPageTitle>
+                <div>
+                    <ng-container>
+                        <div class="centered category-header-title">
+                            Mana Saver
+                        </div>
+                        <div class="centered category-header-description">
+
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-template>
+
+
+            <ng-container *ngIf="ItemService.items.hasOwnProperty(ItemService.root.uuid)">
+                <div class="category-header-backlink">
+                    <app-button [text]="'Вище'" [icon_name]="'arrow_up'" [color]="'gray'" (click)="goToParentUUID(ItemService.items[ItemService.root.uuid].parent_uuid)"></app-button>
+                </div>
+
+
+
+                <div class="category-header-buttons space-between">
+
+                    <div class="centered bumper-right disable-text-selection pointer category-menu-buttons"
+                        [class.category-active-menu-button]="ItemService.MenuService.menu.uuid == ItemService.root.uuid"
+                         (click)="ItemService.MenuService.openMenu(ItemService.root.uuid)">
+                        <div [innerHTML]="ItemService.IconService.icons.menu.svg | safeHtml" class="centered"></div>
+                    </div>
+                </div>
+
+                <!--
+                <div class="centered bumper-right disable-text-selection pointer category-header-reorder"
+                     (click)="ItemService.reorderItems()">
+                    <div [innerHTML]="ItemService.IconService.icons.reload.svg | safeHtml" class="centered"></div>
+                </div>
+                -->
+            </ng-container>
+
+            <ng-container *ngIf="ItemService.root.uuid == ''">
+
+                <div class="category-header-buttons">
+                    <div class="centered bumper-right disable-text-selection pointer category-menu-buttons"
+                         [class.category-active-menu-button]="null == ItemService.root.uuid"
+                         (click)="ItemService.MenuService.openMenu(null)">
+                        <div [innerHTML]="ItemService.IconService.icons.menu.svg | safeHtml" class="centered"></div>
+                    </div>
+                </div>
+            </ng-container>
+
+
+
+
+        </div>
+
+    <ng-container *ngIf="ItemService.items.hasOwnProperty(ItemService.root.uuid)">
+        <ng-container *ngTemplateOutlet="MenuTemplate; context:{ $implicit: ItemService.items[ItemService.root.uuid]  }"></ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="ItemService.root.uuid == ''">
+        <ng-container *ngTemplateOutlet="MenuTemplate; context:{ $implicit: { uuid: null, parent_uuid: null, type: 'root', order_index: 1 }  }"></ng-container>
+    </ng-container>
+
+</ng-template>
+<!--
+   / ШАБЛОН ХЕДЕРУ КАТЕГОРІЇ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН МЕНЮ:
+-->
+<ng-template #MenuTemplate let-item>
+
+    <div [className]="ItemService.MenuService.menu.uuid == item.uuid ? 'menu-outer active_menu' : 'menu-outer not_active_menu'">
+
+        <div [ngClass]="[item.type + '-menu-inner']">
+
+            <!-- Редагування: -->
+            <div class="space-between" *ngIf="item.uuid != ItemService.root.uuid && item.type != 'root'">
+                <div class="centered menu-title">
+                </div>
+                <div class="">
+                    <app-button [text]="'Редагувати'" [icon_name]="'edit'" (click)="ItemService.MenuService.openEditing(item.uuid)"></app-button>
+                </div>
+            </div>
+            <!-- /Редагування -->
+
+
+            <!-- Створення: -->
+            <div class="space-between">
+                <div class="menu-title">
+                    New:
+                </div>
+            </div>
+
+
+            <!-- Меню root: -->
+            <ng-container *ngIf="item.type == 'root'">
+                <div class="columns">
+                    <div class="space-between">
+                        <div class="centered">Category</div>
+                        <div class="menu-icons rows">
+                            <app-button [size]="'nano'" [icon_name]="'new_child_item'"
+                                        (click)="ItemService.MenuService.openCreating(null, 0, 'category')"></app-button>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <!-- /Меню root  -->
+
+            <!-- Меню корінної категорії: ( та що у ХЕДЕРІ ) -->
+            <ng-container *ngIf="item.type == 'category' && item.uuid == ItemService.root.uuid">
+                <div class="columns">
+                    <div class="space-between">
+
+                        <!-- Якщо це НЕ остання, то можна створити дочірню категорію: -->
+                        <ng-container *ngIf="item.hasOwnProperty('tags')">
+                            <ng-container *ngIf="isArray(item.tags)">
+                                <ng-container *ngIf="!item.tags.includes('last')">
+                                    <div class="centered">Category</div>
+                                    <div class="menu-icons rows">
+                                        <app-button [size]="'nano'" [icon_name]="'new_child_item'"
+                                                    (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'category')"></app-button>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+
+                        <!-- Якщо це остання, то можна створити дочірній титул: -->
+                        <ng-container *ngIf="item.hasOwnProperty('tags')">
+                            <ng-container *ngIf="isArray(item.tags)">
+                                <ng-container *ngIf="item.tags.includes('last')">
+                                    <div class="centered">Title</div>
+                                    <div class="menu-icons rows">
+                                        <app-button [size]="'nano'" [icon_name]="'new_child_item'"
+                                                    (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'title')"></app-button>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+
+                    </div>
+                </div>
+            </ng-container>
+            <!-- /Меню корінної категорії -->
+
+
+            <!-- Меню категорії: -->
+            <ng-container *ngIf="item.type == 'category' && item.uuid != ItemService.root.uuid">
+                <div class="columns">
+                    <div class="space-between">
+                        <div class="centered">Category</div>
+                        <div class="menu-icons rows">
+
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_prev_item'" (click)="ItemService.MenuService.openCreating(item.parent_uuid, item.order_index - 1, 'category')"></app-button>
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_next_item'" (click)="ItemService.MenuService.openCreating(item.parent_uuid, item.order_index, 'category')"></app-button>
+
+                            <ng-container *ngIf="item.hasOwnProperty('tags')">
+                                <ng-container *ngIf="isArray(item.tags)">
+                                    <ng-container *ngIf="!item.tags.includes('last')">
+                                        <ng-container *ngIf="item.tags.includes('collapsed')">
+                                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_child_item'" (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'category', true)"></app-button>
+                                        </ng-container>
+                                        <ng-container *ngIf="!item.tags.includes('collapsed')">
+                                            <ng-container *ngIf="item.children.length > 0">
+                                                <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_child_item'" (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'category')"></app-button>
+                                            </ng-container>
+                                            <ng-container *ngIf="item.children.length == 0">
+                                                <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_child_item'" (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'category', true)"></app-button>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="item.hasOwnProperty('tags')">
+                    <ng-container *ngIf="isArray(item.tags)">
+                        <ng-container *ngIf="item.tags.includes('last')">
+                            <div class="columns">
+                                <div class="space-between">
+                                    <div class="centered">Title</div>
+                                    <div class="menu-icons rows">
+                                        <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_child_item'" (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'title', true)"></app-button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+            <!-- /Меню категорії -->
+
+            <!-- Меню титула: -->
+            <ng-container *ngIf="item.type == 'title'">
+                <div class="columns">
+                    <div class="space-between">
+                        <div class="centered">Title</div>
+                        <div class="menu-icons rows">
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_prev_item'" (click)="ItemService.MenuService.openCreating(item.parent_uuid, item.order_index - 1, 'title')"></app-button>
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_next_item'" (click)="ItemService.MenuService.openCreating(item.parent_uuid, item.order_index, 'title')"></app-button>
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_child_item'" (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'title')"></app-button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="columns">
+                    <div class="space-between">
+                        <div class="centered">Paragraph</div>
+                        <div class="menu-icons rows">
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_child_item'" (click)="ItemService.MenuService.openCreating(item.uuid, 0, 'paragraph')"></app-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="space-between">
+                        <div class="centered">Code</div>
+                        <div class="menu-icons rows">
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_child_item'" (click)="ItemService.createParagraphWithCodes(item.uuid, 0, 'paragraph')"></app-button>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <!-- /Меню титула -->
+
+            <!-- Меню параграфу: -->
+            <ng-container *ngIf="item.type == 'paragraph'">
+                <div class="columns">
+                    <div class="space-between">
+                        <div class="centered">Paragraph</div>
+                        <div class="menu-icons rows">
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_prev_item'" (click)="ItemService.MenuService.openCreating(item.parent_uuid, item.order_index - 1, 'paragraph')"></app-button>
+                            <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_next_item'" (click)="ItemService.MenuService.openCreating(item.parent_uuid, item.order_index, 'paragraph')"></app-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-between">
+                    <div class="centered">Code</div>
+                    <div class="menu-icons rows">
+                        <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_prev_item'" (click)="ItemService.createParagraphWithCodes(item.parent_uuid, item.order_index - 1, 'paragraph')"></app-button>
+                        <app-button class="menu-button" [size]="'nano'" [icon_name]="'new_next_item'" (click)="ItemService.createParagraphWithCodes(item.parent_uuid, item.order_index, 'paragraph')"></app-button>
+                    </div>
+                </div>
+
+            </ng-container>
+            <!-- /Меню параграфу -->
+
+
+            <!-- /Створення -->
+
+        </div>
+    </div>
+</ng-template>
+<!--
+   / ШАБЛОН МЕНЮ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН КАТЕГОРІЇ
+-->
+<ng-template #CategoryTemplate let-item let-indent="indent">
+        <!--
+            BUMPER TEMPLATE:
+        <div class="category-item space-between">
+            <div class="bumper-left">left</div>
+            <div class="flex bumper-middle">middle</div>
+            <div class="bumper-right">right</div>
+        </div>
+        -->
+
+    <!-- Створення першного допису: -->
+        <app-create [item]="item" [indent]="indent" [position]="'first'"></app-create>
+    <!-- /Створення першного допису -->
+
+    <div class="category-item" [style.margin-left]="(indent * indentPixels) + 'px'">
+        <div class="space-between">
+            <div class="flex-grow rows">
+
+                <div class="category-order-index centered">{{item.order_index}}</div>
+
+                <!-- Назва категорії: -->
+                <div class="flex-grow rows category-item-text vertically-centered" (click)="goToParentUUID(item.uuid)">
+
+                    <ng-container *ngIf="item.hasOwnProperty('tags')">
+                        <ng-container *ngIf="isArray(item.tags)">
+                            <ng-container *ngIf="item.tags.includes('last')"><div [innerHTML]="ItemService.IconService.icons.list.svg | safeHtml" class="centered"></div></ng-container>
+                            <ng-container *ngIf="!item.tags.includes('last')"><div [innerHTML]="ItemService.IconService.icons.category.svg | safeHtml" class="centered"></div></ng-container>
+                        </ng-container>
+                    </ng-container>
+
+                    <div class="category-title-outer">
+                        <div *ngIf="item.text == null" [class.last-category-title]="item.tags.includes('last')">{{item.title}}</div>
+
+                        <ng-container *ngIf="item.text != null">
+                            <div class="columns" >
+                                <div class="vertically-centered category-title-extended" [class.last-category-title]="item.tags.includes('last')">{{item.title}}</div>
+                                <div class="vertically-centered category-description-extended">— {{item.text}}</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <!-- /Назва категорії -->
+            </div>
+
+            <div class="centered bumper-right disable-text-selection pointer category-menu-buttons"
+                 [class.category-active-menu-button]="ItemService.MenuService.menu.uuid == item.uuid"
+                 (click)="ItemService.MenuService.openMenu(item.uuid)">
+                <div [innerHTML]="ItemService.IconService.icons.menu.svg | safeHtml" class="centered"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="" [style.margin-left]="(indent * indentPixels) + 'px'">
+        <ng-container *ngTemplateOutlet="MenuTemplate; context:{ $implicit: item  }"></ng-container>
+    </div>
+
+    <div class="" [style.margin-left]="(indent * indentPixels) + 'px'">
+        <!-- Редагування: -->
+        <app-edit [item]="item" [indent]="1"></app-edit>
+        <!-- /Редагування -->
+    </div>
+
+
+
+    <ng-container *ngIf="isArray(item.tags)">
+        <ng-container *ngIf="!item.tags.includes('collapsed')">
+            <ng-container *ngIf="item.children.length > 0">
+                <ng-container *ngFor="let child of item.children">
+                    <ng-container *ngIf="child.type == 'category'">
+                        <ng-container *ngTemplateOutlet="CategoryTemplate; context:{ $implicit: child, indent: indent + 1  }"></ng-container>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="item.children.length == 0">
+        <!--no children -->
+    </ng-container>
+
+
+    <!-- Створення наступного допису: -->
+    <app-create [item]="item" [indent]="indent" [position]="'next'"></app-create>
+    <!-- /Створення наступного допису -->
+
+</ng-template>
+<!--
+   / ШАБЛОН КАТЕГОРІЇ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН ТИТУЛУ
+-->
+<ng-template #TitleTemplate let-item let-indent="indent">
+
+
+
+    <!-- Створення першного допису: -->
+    <app-create [item]="item" [indent]="indent + 1" [position]="'first'"></app-create>
+    <!-- /Створення першного допису -->
+
+
+    <div class="title-top-bumper-first" *ngIf="indent == 0"></div>
+    <div class="title-top-bumper" *ngIf="indent > 0"></div>
+
+    <div class="rows title-line" [style.margin]="indent == 0 ? '0px 20px 0px 20px' : '0px 0px 0px 20px'">
+
+            <div class="space-between flex-grow title-background">
+
+                <!-- Назва титулу --->
+                <div class="rows relative">
+                    <ng-container *ngIf="indent == 0"><div class="title-name-first-level centered">{{item.title}}</div></ng-container>
+                    <ng-container *ngIf="indent > 0"><div class="title-name-second-level centered">{{item.title}}</div></ng-container>
+                    <div class="title-order-index">{{item.order_index}}</div>
+                </div>
+                <!-- /Назва титулу --->
+
+                <div class="centered title-menu-button pointer"
+                     style="width: 60px;"
+                     (click)="ItemService.MenuService.openMenu(item.uuid)">
+                    <div class="centered category-menu-buttons" [innerHTML]="ItemService.IconService.icons.menu.svg | safeHtml" style="width: 60px;"
+                         [class.category-active-menu-button]="ItemService.MenuService.menu.uuid == item.uuid"
+                    ></div>
+                </div>
+            </div>
+    </div>
+
+    <div class="title-content" [style.margin]="indent == 0 ? '0px 20px 0px 20px' : '0px 0px 0px 20px'">
+
+        <ng-container *ngTemplateOutlet="MenuTemplate; context:{ $implicit: item }"></ng-container>
+
+        <!-- Редагування: -->
+        <app-edit [item]="item" [indent]="1"></app-edit>
+        <!-- /Редагування -->
+
+
+        <!-- Дочірні дописи титула: -->
+        <ng-container *ngIf="item.children.length > 0">
+            <ng-container *ngFor="let child of item.children">
+
+                <ng-container *ngIf="child.type == 'title'">
+                    <ng-container *ngTemplateOutlet="TitleTemplate; context:{ $implicit:child, indent: indent + 1 }"></ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="child.type == 'paragraph'">
+                    <ng-container *ngTemplateOutlet="ParagraphTemplate; context:{ $implicit:child, indent: indent }"></ng-container>
+                </ng-container>
+
+            </ng-container>
+        </ng-container>
+        <!-- /Дочірні дописи титула -->
+
+        <!-- Створення першого дочірнього допису для титула: -->
+        <ng-container *ngIf="item.children.length == 0">
+            <div class="title-line">
+
+                <!-- <div class="indent" [style.width]="((indent + 1) * indentPixels) + 'px'"></div> -->
+
+                    <!-- Створення першного допису: -->
+                    <app-create [item]="item" [indent]="(indent + 1)" [position]="'child'"></app-create>
+                    <!-- /Створення першного допису -->
+
+            </div>
+        </ng-container>
+        <!-- /Створення першого дочірнього допису для титула -->
+
+
+        <div class="title-bottom-bumper"></div>
+    </div>
+
+    <!-- Створення наступного допису: -->
+    <app-create [item]="item" [indent]="(indent + 1)" [position]="'next'"></app-create>
+    <!-- /Створення наступного допису -->
+
+
+</ng-template>
+<!--
+   / ШАБЛОН ТИТУЛУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН ПАРАГРАФУ
+-->
+
+<ng-template #ParagraphTemplate let-item let-indent="indent">
+    <!--<p>{{item.type}} : <span>{{item.order_index}}. {{item.title}} | {{item.updated_at}}</span></p>-->
+
+    <div class="paragraph-outer">
+
+        <!-- Створення наступного допису: -->
+        <app-create [item]="item" [indent]="indent + 1" [position]="'first'"></app-create>
+        <!-- /Створення наступного допису -->
+
+
+        <div class="rows ">
+            <div class="flex-grow paragraph-content">
+                <div [innerHTML]="item.text | safeHtml" class="" *ngIf="item.text != null"></div>
+                <div *ngIf="item.text == null"></div>
+                <div *ngIf="item.text == ''"></div>
+            </div>
+            <div class="paragraph-bumper-right columns">
+                <div class="paragraph-menu-button-outer" style="margin-top: 8px">
+                    <div [innerHTML]="ItemService.IconService.icons.menu.svg | safeHtml" class="centered pointer category-menu-buttons"
+                         [class.category-active-menu-button]="ItemService.MenuService.menu.uuid == item.uuid"
+                         (click)="ItemService.MenuService.openMenu(item.uuid)"
+                         style="'margin-top:10px'"
+                    ></div>
+                </div>
+
+            </div>
+        </div>
+
+        <ng-container *ngTemplateOutlet="MenuTemplate; context:{ $implicit: item }"></ng-container>
+
+        <!-- Дочірні коди: -->
+        <ng-container *ngIf="item.tags.includes('has_codes')">
+
+            <!-- Таби кодів: -->
+            <div class="rows code-tabs-outer">
+                <ng-container *ngIf="item.children.length > 0">
+                    <ng-container *ngFor="let child of item.children">
+                        <div class="rows code-tab pointer"
+                             (click)="ItemService.MenuService.activateCodeTab(item.uuid, child.uuid)"
+                            [class.active-code-tab]="ItemService.MenuService.codeTabs[item.uuid] == child.uuid &&
+                            ItemService.MenuService.creating.parent_uuid != item.uuid"
+                        >
+                            <ng-container *ngIf="child.title == null">{{child.order_index}}</ng-container>
+                            <ng-container *ngIf="child.title != null">{{textEllipsis(child.title, 30)}}</ng-container>
+
+                        </div>
+                    </ng-container>
+                </ng-container>
+
+                <div class="rows code-tab pointer new-code-tab-btn"
+                     (click)="ItemService.MenuService.openCreating(item.uuid, item.children.length, 'code')"
+                     [class.active-code-tab]="ItemService.MenuService.creating.parent_uuid == item.uuid"
+                >
+                    <ng-container *ngIf="ItemService.MenuService.creating.parent_uuid == item.uuid">Новий код:</ng-container>
+                    <ng-container *ngIf="ItemService.MenuService.creating.parent_uuid != item.uuid">+</ng-container>
+                </div>
+            </div>
+            <!-- /Таби кодів -->
+
+            <!-- Створення нового коду: -->
+            <ng-container *ngIf="ItemService.MenuService.creating.parent_uuid == item.uuid">
+                <!-- Створення наступного допису: -->
+                <app-create [item]="item" [indent]="indent + 1" [position]="'child'"></app-create>
+                <!-- /Створення наступного допису -->
+            </ng-container>
+            <!-- /Створення нового коду -->
+
+
+
+            <ng-container *ngIf="ItemService.MenuService.creating.parent_uuid != item.uuid">
+                <!-- Відображення дочірніх кодів: -->
+                <ng-container *ngIf="item.children.length > 0">
+                    <ng-container *ngFor="let child of item.children">
+                        <ng-container *ngTemplateOutlet="CodeTemplate; context:{ $implicit:child, indent: indent + 1 }"></ng-container>
+                    </ng-container>
+                </ng-container>
+                <!-- /Відображення дочірніх кодів -->
+            </ng-container>
+
+        </ng-container>
+        <!-- /Дочірні коди -->
+
+
+        <ng-container *ngIf="item.tags.includes('has_files')">
+            has_files
+        </ng-container>
+
+        <!-- Створення наступного допису: -->
+        <app-create [item]="item" [indent]="indent + 1" [position]="'next'"></app-create>
+        <!-- /Створення наступного допису -->
+
+        <!-- Редагування: -->
+        <app-edit [item]="item" [indent]="1"></app-edit>
+        <!-- /Редагування -->
+
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН ПАРАГРАФУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН КОДІВ
+-->
+
+<ng-template #CodeTemplate let-item let-indent="indent">
+
+    <ng-container *ngIf="ItemService.MenuService.codeTabs.hasOwnProperty(item.parent_uuid)">
+        <ng-container *ngIf="ItemService.MenuService.codeTabs[item.parent_uuid] == item.uuid">
+            <div class="columns" *ngIf="ItemService.MenuService.editing.uuid != item.uuid" style="padding: 0px 20px; border-right: 1px solid #d8dee4;">
+                <div class="code-outer">
+                    <code #codeElement
+                          [highlight]="item.text"
+                          [lineNumbers]="true"
+                          [languages]="[ItemService.codeLanguages.includes(item.src) ? item.src : 'php']"
+                    ></code>
+
+                    <div class="code-lang">{{item.src}}</div>
+                </div>
+
+                <div class="space-between code-footer" style="background: #001d24; border-radius: 0px 0px 5px 5px;">
+
+                    <div class="rows pointer" (click)="copyToClipboard(item.text)"
+                         style="padding: 2px 10px;"
+                    >
+                        <div class="centered" [innerHTML]="ItemService.IconService.icons.copy.svg | safeHtml"></div>
+                        <div class="centered" style="padding: 7px 2px;">Копіювати</div>
+                    </div>
+
+                    <div class="rows centered">
+                        <div *ngFor="let tag of item.tags" class="code-tag-in-footer pointer">
+                            {{tag}}
+                        </div>
+                    </div>
+
+                    <div class="rows">
+                        <div class="pointer centered"
+                             (click)="ItemService.MenuService.openEditing(item.uuid)"
+                             style="padding: 7px 10px;">
+                            <div class="centered" [innerHTML]="ItemService.IconService.icons.edit.svg | safeHtml"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Редагування коду: -->
+            <div class="" *ngIf="ItemService.MenuService.editing.uuid == item.uuid">
+                <app-edit [item]="item" [indent]="1"></app-edit>
+            </div>
+            <!-- /Редагування коду -->
+
+        </ng-container>
+    </ng-container>
+
+</ng-template>
+<!--
+   / ШАБЛОН КОДІВ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
