@@ -1,1 +1,181 @@
-<p>search works!</p>
+
+<div class="search-header rows">
+    <div class="centered bread-crumbs-button pointer" (click)="goToParentUUID('')">HOME</div>
+</div>
+
+<div class="search-content rows">
+
+    <div class="sidebar fixed search-sidebar">
+        <div class="sidebar-inner">
+            <div class="sidebar-content">
+
+                <!-- ВИБІР ТИПУ ДОПИСУ: --->
+                <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                    <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                        Тип допису:
+                    </div>
+                    <div class="flex-grow stage-right">
+                        <select [(ngModel)]="searchParam.type" (change)="typeChange()">
+                            <option [value]="'all'" [selected]="searchParam.type == 'all'">Будь-який тип</option>
+                            <option [value]="'category'" [selected]="searchParam.type == 'category'">Категорія</option>
+                            <option [value]="'title'" [selected]="searchParam.type == 'title'">Титул</option>
+                            <option [value]="'paragraph'" [selected]="searchParam.type == 'paragraph'">Параграф</option>
+                            <option [value]="'code'" [selected]="searchParam.type == 'code'">Код</option>
+                            <option [value]="'file'" [selected]="searchParam.type == 'file'">Файл</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- /ВИБІР ТИПУ ДОПИСУ --->
+
+                <!-- Пошук у титулі: --->
+                <ng-container *ngIf="visibleInputs[searchParam.type].includes('title')">
+                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                            Титул:
+                        </div>
+                        <div class="flex-grow stage-right">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="searchParam.title" (keyup)="getResults()">
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- /Пошук у титулі --->
+
+                <!-- Пошук у описі: --->
+                <ng-container *ngIf="visibleInputs[searchParam.type].includes('description')">
+                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                            Опис:
+                        </div>
+                        <div class="flex-grow stage-right">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="searchParam.description" (keyup)="getResults()">
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- /Пошук у описі --->
+
+                <!-- Пошук у attachment: --->
+                <ng-container *ngIf="visibleInputs[searchParam.type].includes('attachment')">
+                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                            Мова:
+                        </div>
+                        <div class="flex-grow stage-right">
+                            <select [(ngModel)]="attachment" (change)="attachmentChange()">
+                                <option [value]="''">Нічого</option>
+                                <option [value]="'has_codes'">Коди</option>
+                                <option [value]="'has_files'">Файли</option>
+                            </select>
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- /Пошук у attachment --->
+
+
+                <!-- Пошук у src: --->
+                <ng-container *ngIf="visibleInputs[searchParam.type].includes('src')">
+                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                            src:
+                        </div>
+                        <div class="flex-grow stage-right">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="searchParam.src" (keyup)="getResults()">
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- /Пошук у src --->
+
+                <!-- Пошук у lang: --->
+                <ng-container *ngIf="visibleInputs[searchParam.type].includes('lang')">
+                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                            Мова:
+                        </div>
+                        <div class="flex-grow stage-right">
+                            <select [(ngModel)]="lang" (change)="langChange()">
+                                <option [value]="'php'">php</option>
+                                <option [value]="'js'">js</option>
+                                <option [value]="'css'">css</option>
+                                <option [value]="'html'">html</option>
+                                <option [value]="'typescript'">typescript</option>
+                                <option [value]="'bash'">bash</option>
+                                <option [value]="'xml'">xml</option>
+                                <option [value]="'sql'">sql</option>
+                                <option [value]="'go'">go</option>
+                            </select>
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- /Пошук у lang --->
+
+                <!-- Пошук у тегах: --->
+                <ng-container *ngIf="visibleInputs[searchParam.type].includes('tags')">
+                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                            Теги:
+                        </div>
+                        <div class="flex-grow stage-right">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="tagsString" (keyup)="tagsChange()">
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- /Пошук у тегах --->
+
+
+
+
+                <!-- СОРТУВАННЯ --->
+                <div class="rows stage" style="margin: 8px 0px 17px 0px; border-top: 1px solid #b0b0b0; padding-top: 5px;">
+                    <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                        Сортувати за:
+                    </div>
+                    <div class="flex-grow stage-right">
+                        <select [(ngModel)]="searchParam.order_by" (change)="getResults()">
+                            <option [value]="'created_at'" [selected]="searchParam.order_by == 'created_at'">created_at</option>
+                            <option [value]="'updated_at'" [selected]="searchParam.order_by == 'updated_at'">updated_at</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="rows stage" style="margin: 8px 0px 17px 0px;">
+                    <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                        Сортувати за:
+                    </div>
+                    <div class="flex-grow stage-right">
+                        <select [(ngModel)]="searchParam.sort" (change)="getResults()">
+                            <option [value]="'desc'" [selected]="searchParam.sort == 'desc'">desc</option>
+                            <option [value]="'asc'" [selected]="searchParam.sort == 'asc'">asc</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- /СОРТУВАННЯ --->
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="search-results flex-grow">
+        <div class="columns">
+            <div class="navigation rows">
+                <div class="" (click)="prevPage()">PREV</div>
+                <div class="" (click)="nextPage()">NEXT</div>
+                <div class="">offset: {{searchParam.offset}} | limit: {{searchParam.limit}}}</div>
+            </div>
+
+            <div class="items columns">
+                <div class="result" *ngFor="let item of results">
+
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<div class="search-footer">search-footer</div>

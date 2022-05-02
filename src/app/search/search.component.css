@@ -1,0 +1,61 @@
+.search-header {
+    background: #222;
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: -0.21px;
+    border-bottom: 4px solid #36b355;
+    padding: 4px 0px 4px 5px;
+}
+
+.bread-crumbs-button {
+    background: #115400;
+    padding: 5px 10px;
+    margin: 0px 3px 0px 2px;
+    border-radius: 3px;
+}
+
+.search-content {
+
+}
+.search-sidebar {
+
+}
+.search-results {
+    background: #d9d9d9;
+}
+
+.search-footer {
+    background: #f2f2f5;
+}
+
+/*
+    ----> SIDEBAR:
+    Оці стилі треба копіювати для двохколоночного виду:
+*/
+::-webkit-scrollbar { width: 14px; }
+::-webkit-scrollbar-track { -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset; }
+::-webkit-scrollbar-thumb { background: #9171dc; }
+.outer { display: flex; height: 100%; width: calc(100vw - 14px); /* 14px це ширина скролбара */ }
+.inner { display: flex; flex-grow: 1; }
+.content { display: flex; flex-direction: column; flex: 1; }
+
+.sidebar { display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid #d8dee4; }
+.sidebar-inner { display: flex; flex-direction: column;  }
+.fixed {
+    flex: 0 0 300px; height: calc(100vh - 37px);
+    overflow-y: auto; overflow-x: hidden; position: sticky;
+    top: 0; transition: flex .2s ease-out;
+}
+
+@media (max-width:961px)
+{
+    .fixed { flex: 0 0 40px; }
+    .sidebar-inner { display: none; }
+}
+
+.sidebar-left { flex-direction: row-reverse; }
+.sidebar-right { flex-direction: row; }
+/*
+    <- оці стилі
+    <---- SIDEBAR
+*/
