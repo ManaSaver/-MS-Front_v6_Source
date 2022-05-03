@@ -391,7 +391,24 @@ export class ItemService
 
     }
 
+    /**
+     *
+     */
+    search(data: any)
+    {
+        console.log('search')
 
+        this.HttpClient.post(this.ConfigService.backend + '/search?database=' + this.ConfigService.database, {
+            headers: { 'Content-Type': 'application/json'},
+            body : data
+        }).subscribe( (response: any) => {
+            console.log('search result', response)
+        }, (error: any) => {
+            console.error('backup Request failed with error', error.error, error)
+        })
+
+
+    }
 
     /**
      * Знайти дочірній елемент до вказаного, по його позиції

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from "@angular/platform-browser";
 import { Router, ActivatedRoute } from '@angular/router';
 
+import { ItemService } from "../services/item.service";
+
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
@@ -45,6 +47,7 @@ export class SearchComponent implements OnInit
         private Title: Title,
         private router: Router,
         private route: ActivatedRoute,
+        public ItemService: ItemService,
     ) { }
 
     ngOnInit(): void
@@ -102,6 +105,7 @@ export class SearchComponent implements OnInit
         this.searchParam.offset = offset
         console.log('getResults()', this.searchParam)
 
+        this.ItemService.search(this.searchParam)
     }
 
     typeChange()
