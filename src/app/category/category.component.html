@@ -277,7 +277,7 @@
 <ng-template #MenuTemplate let-item>
 
     <div [className]="ItemService.MenuService.menu.uuid == item.uuid ? 'menu-outer active_menu' : 'menu-outer not_active_menu'">
-
+        <div *ngIf="ItemService.MenuService.menu.uuid == item.uuid" style="min-height: 50px;">
         <div [ngClass]="[item.type + '-menu-inner']">
 
             <!-- Редагування: -->
@@ -461,6 +461,8 @@
 
         </div>
     </div>
+    </div>
+
 </ng-template>
 <!--
    / ШАБЛОН МЕНЮ
@@ -523,9 +525,11 @@
                 <!-- /Назва категорії -->
             </div>
 
-            <div class="centered bumper-right disable-text-selection pointer category-menu-buttons"
+            <div class="centered bumper-right disable-text-selection pointer category-menu-buttons" appClicks
                  [class.category-active-menu-button]="ItemService.MenuService.menu.uuid == item.uuid"
-                 (click)="ItemService.MenuService.openMenu(item.uuid)">
+                 (click)="ItemService.MenuService.openMenu(item.uuid)"
+                 [attr.uuid]="item.uuid"
+            >
                 <div [innerHTML]="ItemService.IconService.icons.menu.svg | safeHtml" class="centered"></div>
             </div>
         </div>

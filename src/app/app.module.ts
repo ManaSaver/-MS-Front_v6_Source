@@ -24,7 +24,8 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
 import { ButtonComponent } from './reusable-elements/button/button.component';
-
+import { RedirectFromSearchDirective } from './directives/redirect-from-search.directive';
+import { ClicksDirective } from './directives/clicks.directive';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,8 @@ import { ButtonComponent } from './reusable-elements/button/button.component';
         CreateComponent,
         TinymceComponent,
         ButtonComponent,
+        RedirectFromSearchDirective,
+        ClicksDirective,
     ],
     imports: [
         BrowserModule,

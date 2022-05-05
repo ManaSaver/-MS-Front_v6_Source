@@ -15,52 +15,52 @@
                         Тип допису:
                     </div>
                     <div class="flex-grow stage-right">
-                        <select [(ngModel)]="searchParam.type" (change)="typeChange()">
-                            <option [value]="'all'" [selected]="searchParam.type == 'all'">Будь-який тип</option>
-                            <option [value]="'category'" [selected]="searchParam.type == 'category'">Категорія</option>
-                            <option [value]="'title'" [selected]="searchParam.type == 'title'">Титул</option>
-                            <option [value]="'paragraph'" [selected]="searchParam.type == 'paragraph'">Параграф</option>
-                            <option [value]="'code'" [selected]="searchParam.type == 'code'">Код</option>
-                            <option [value]="'file'" [selected]="searchParam.type == 'file'">Файл</option>
+                        <select [(ngModel)]="SearchService.searchParam.type" (change)="SearchService.typeChange()">
+                            <option [value]="'all'" [selected]="SearchService.searchParam.type == 'all'">Будь-який тип</option>
+                            <option [value]="'category'" [selected]="SearchService.searchParam.type == 'category'">Категорія</option>
+                            <option [value]="'title'" [selected]="SearchService.searchParam.type == 'title'">Титул</option>
+                            <option [value]="'paragraph'" [selected]="SearchService.searchParam.type == 'paragraph'">Параграф</option>
+                            <option [value]="'code'" [selected]="SearchService.searchParam.type == 'code'">Код</option>
+                            <option [value]="'file'" [selected]="SearchService.searchParam.type == 'file'">Файл</option>
                         </select>
                     </div>
                 </div>
                 <!-- /ВИБІР ТИПУ ДОПИСУ --->
 
                 <!-- Пошук у титулі: --->
-                <ng-container *ngIf="visibleInputs[searchParam.type].includes('title')">
+                <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('title')">
                     <div class="rows stage" style="margin: 8px 0px 17px 0px;">
                         <div class="vertically-centered stage-left" style="margin: 0px 12px;">
                             Титул:
                         </div>
                         <div class="flex-grow stage-right">
-                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="searchParam.title" (keyup)="getResults()">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="SearchService.searchParam.title" (keyup)="SearchService.getResults()">
                         </div>
                     </div>
                 </ng-container>
                 <!-- /Пошук у титулі --->
 
                 <!-- Пошук у описі: --->
-                <ng-container *ngIf="visibleInputs[searchParam.type].includes('description')">
+                <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('description')">
                     <div class="rows stage" style="margin: 8px 0px 17px 0px;">
                         <div class="vertically-centered stage-left" style="margin: 0px 12px;">
                             Опис:
                         </div>
                         <div class="flex-grow stage-right">
-                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="searchParam.description" (keyup)="getResults()">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="SearchService.searchParam.description" (keyup)="SearchService.getResults()">
                         </div>
                     </div>
                 </ng-container>
                 <!-- /Пошук у описі --->
 
                 <!-- Пошук у attachment: --->
-                <ng-container *ngIf="visibleInputs[searchParam.type].includes('attachment')">
+                <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('attachment')">
                     <div class="rows stage" style="margin: 8px 0px 17px 0px;">
                         <div class="vertically-centered stage-left" style="margin: 0px 12px;">
                             Мова:
                         </div>
                         <div class="flex-grow stage-right">
-                            <select [(ngModel)]="attachment" (change)="attachmentChange()">
+                            <select [(ngModel)]="attachment" (change)="SearchService.attachmentChange()">
                                 <option [value]="''">Нічого</option>
                                 <option [value]="'has_codes'">Коди</option>
                                 <option [value]="'has_files'">Файли</option>
@@ -72,26 +72,26 @@
 
 
                 <!-- Пошук у src: --->
-                <ng-container *ngIf="visibleInputs[searchParam.type].includes('src')">
+                <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('src')">
                     <div class="rows stage" style="margin: 8px 0px 17px 0px;">
                         <div class="vertically-centered stage-left" style="margin: 0px 12px;">
                             src:
                         </div>
                         <div class="flex-grow stage-right">
-                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="searchParam.src" (keyup)="getResults()">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="SearchService.searchParam.src" (keyup)="SearchService.getResults()">
                         </div>
                     </div>
                 </ng-container>
                 <!-- /Пошук у src --->
 
                 <!-- Пошук у lang: --->
-                <ng-container *ngIf="visibleInputs[searchParam.type].includes('lang')">
+                <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('lang')">
                     <div class="rows stage" style="margin: 8px 0px 17px 0px;">
                         <div class="vertically-centered stage-left" style="margin: 0px 12px;">
                             Мова:
                         </div>
                         <div class="flex-grow stage-right">
-                            <select [(ngModel)]="lang" (change)="langChange()">
+                            <select [(ngModel)]="SearchService.lang" (change)="SearchService.langChange()">
                                 <option [value]="'php'">php</option>
                                 <option [value]="'js'">js</option>
                                 <option [value]="'css'">css</option>
@@ -108,13 +108,14 @@
                 <!-- /Пошук у lang --->
 
                 <!-- Пошук у тегах: --->
-                <ng-container *ngIf="visibleInputs[searchParam.type].includes('tags')">
+                <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('tags')">
                     <div class="rows stage" style="margin: 8px 0px 17px 0px;">
                         <div class="vertically-centered stage-left" style="margin: 0px 12px;">
                             Теги:
                         </div>
                         <div class="flex-grow stage-right">
-                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="tagsString" (keyup)="tagsChange()">
+                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="SearchService.tagsString" (keyup)="SearchService.tagsChange()">
+                            через кому ("то" і "то)
                         </div>
                     </div>
                 </ng-container>
@@ -129,9 +130,9 @@
                         Сортувати за:
                     </div>
                     <div class="flex-grow stage-right">
-                        <select [(ngModel)]="searchParam.order_by" (change)="getResults()">
-                            <option [value]="'created_at'" [selected]="searchParam.order_by == 'created_at'">created_at</option>
-                            <option [value]="'updated_at'" [selected]="searchParam.order_by == 'updated_at'">updated_at</option>
+                        <select [(ngModel)]="SearchService.searchParam.order_by" (change)="SearchService.getResults()">
+                            <option [value]="'created_at'" [selected]="SearchService.searchParam.order_by == 'created_at'">created_at</option>
+                            <option [value]="'updated_at'" [selected]="SearchService.searchParam.order_by == 'updated_at'">updated_at</option>
                         </select>
                     </div>
                 </div>
@@ -141,9 +142,9 @@
                         Сортувати за:
                     </div>
                     <div class="flex-grow stage-right">
-                        <select [(ngModel)]="searchParam.sort" (change)="getResults()">
-                            <option [value]="'desc'" [selected]="searchParam.sort == 'desc'">desc</option>
-                            <option [value]="'asc'" [selected]="searchParam.sort == 'asc'">asc</option>
+                        <select [(ngModel)]="SearchService.searchParam.sort" (change)="SearchService.getResults()">
+                            <option [value]="'desc'" [selected]="SearchService.searchParam.sort == 'desc'">desc</option>
+                            <option [value]="'asc'" [selected]="SearchService.searchParam.sort == 'asc'">asc</option>
                         </select>
                     </div>
                 </div>
@@ -161,13 +162,36 @@
     <div class="search-results flex-grow">
         <div class="columns">
             <div class="navigation rows">
-                <div class="" (click)="prevPage()">PREV</div>
-                <div class="" (click)="nextPage()">NEXT</div>
-                <div class="">offset: {{searchParam.offset}} | limit: {{searchParam.limit}}}</div>
+                <div class="" (click)="SearchService.prevPage()">PREV</div>
+                <div class="" (click)="SearchService.nextPage()">NEXT</div>
+                <div class="">offset: {{SearchService.searchParam.offset}} | limit: {{SearchService.searchParam.limit}}</div>
             </div>
 
-            <div class="items columns">
-                <div class="result" *ngFor="let item of results">
+            <div class="items columns" style="padding: 10px 5px; ">
+                <div class="result" *ngFor="let item of SearchService.results" style="margin: 10px 0px; ">
+
+                    <!-- Типи дописів: -->
+                    <ng-container *ngIf="item.type == 'category'">
+                        <ng-container *ngTemplateOutlet="CategoryTemplate; context:{ $implicit: item }"></ng-container>
+                    </ng-container>
+
+                    <ng-container *ngIf="item.type == 'title'">
+                        <ng-container *ngTemplateOutlet="TitleTemplate; context:{ $implicit: item }"></ng-container>
+                    </ng-container>
+
+                    <ng-container *ngIf="item.type == 'paragraph'">
+                        <ng-container *ngTemplateOutlet="ParagraphTemplate; context:{ $implicit: item }"></ng-container>
+                    </ng-container>
+
+                    <ng-container *ngIf="item.type == 'code'">
+                        <ng-container *ngTemplateOutlet="CodeTemplate; context:{ $implicit: item }"></ng-container>
+                    </ng-container>
+
+                    <!-- / Типи дописів -->
+
+
+
+
 
                 </div>
             </div>
@@ -179,3 +203,105 @@
 </div>
 
 <div class="search-footer">search-footer</div>
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН КАТЕГОРІЇ
+-->
+<ng-template #CategoryTemplate let-item>
+
+    <div class="columns">
+        <div class="">
+            {{item.type}} {{item.uuid}}
+        </div>
+        <div class="">
+            {{item.title}}
+        </div>
+        <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН КАТЕГОРІЇ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН ТИТУЛУ
+-->
+<ng-template #TitleTemplate let-item>
+
+    <div class="columns">
+        <div class="">
+            {{item.type}} {{item.uuid}}
+        </div>
+        <div class="">
+            {{item.title}}
+        </div>
+        <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН ТИТУЛУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН ПАРАГРАФУ
+-->
+<ng-template #ParagraphTemplate let-item>
+
+    <div class="columns">
+        <div class="">
+            {{item.type}} {{item.uuid}}
+        </div>
+        <div class="">
+            {{item.text}}
+        </div>
+        <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН ПАРАГРАФУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+
+
+
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН КОДУ
+-->
+<ng-template #CodeTemplate let-item>
+
+    <div class="columns">
+        <div class="">
+            {{item.type}} {{item.uuid}}
+        </div>
+        <div class="">
+            {{item.text}}
+        </div>
+        <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
+    </div>
+
+</ng-template>
+<!--
+   / ШАБЛОН КОДУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+
+<ng-template #itemFooter let-item>
+    <div class="pointer item-footer redirect-to-item">перейти</div>
+</ng-template>

@@ -3,6 +3,7 @@ import { Title } from "@angular/platform-browser";
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { ItemService } from "../services/item.service";
+import { SearchService } from "../services/search.service";
 
 @Component({
     selector: 'app-search',
@@ -48,125 +49,18 @@ export class SearchComponent implements OnInit
         private router: Router,
         private route: ActivatedRoute,
         public ItemService: ItemService,
+        public SearchService: SearchService,
     ) { }
 
     ngOnInit(): void
     {
         this.Title.setTitle('Пошук дописів');
+        this.SearchService.getResults()
 
     }
 
-    getResults(offset: number = 0)
-    {
-        // Очищую значення, які не підходять до обраного типу дописів:
-        switch(this.searchParam.type) {
 
-            case 'category': {
-                this.searchParam.src = ''
-                this.searchParam.tags = []
-                break;
-            }
 
-            case 'title': {
-                this.searchParam.description = ''
-                this.searchParam.src = ''
-                this.searchParam.tags = []
-                break;
-            }
-
-            case 'paragraph': {
-                this.searchParam.title = ''
-                this.searchParam.src = ''
-
-                this.searchParam.tags = []
-                if(this.attachment.length > 0) {
-                    this.searchParam.tags.push(this.attachment)
-                }
-
-                break;
-            }
-
-            case 'code': {
-                this.searchParam.src = this.lang
-                break;
-            }
-
-            case 'file': {
-                //statements;
-                break;
-            }
-
-            default: {
-                //statements;
-                break;
-            }
-        }
-
-        this.searchParam.offset = offset
-        console.log('getResults()', this.searchParam)
-
-        this.ItemService.search(this.searchParam)
-    }
-
-    typeChange()
-    {
-        if(this.searchParam.type == 'code') {
-            this.searchParam.src = this.lang
-        } else {
-            this.searchParam.src = ''
-        }
-
-        this.removeSpecialTags()
-        this.tagsChange(false)
-        this.getResults()
-    }
-
-    tagsChange(getResults: boolean = true)
-    {
-        this.searchParam.tags = this.tagsString.split(',').map(item => item.trim());
-
-        for (let key in this.searchParam.tags) {
-            if (this.searchParam.tags[key].length == 0) {
-                delete this.searchParam.tags[key]
-            }
-        }
-
-        this.searchParam.tags = this.searchParam.tags.filter((el: any) => {
-            return el.length > 0
-        });
-
-        if (getResults) {
-            this.getResults()
-        }
-    }
-
-    removeSpecialTags()
-    {
-        this.searchParam.tags = this.searchParam.tags.filter((el: any) => {
-            if(this.searchParam.type == 'code') {
-                if(el == 'has_codes') return false
-                if(el == 'has_files') return false
-            }
-            return true
-        });
-    }
-
-    langChange()
-    {
-        this.searchParam.src = this.lang
-        this.getResults()
-    }
-
-    attachmentChange()
-    {
-        this.searchParam.tags = []
-
-        if(this.attachment.length > 0) {
-            this.searchParam.tags.push(this.attachment)
-        }
-
-        this.getResults()
-    }
 
     goToParentUUID(uuid: string | null)
     {
@@ -177,19 +71,6 @@ export class SearchComponent implements OnInit
         }
     }
 
-    prevPage()
-    {
-        if(this.searchParam.offset >= this.searchParam.limit) {
-            this.searchParam.offset = (this.searchParam.offset - this.searchParam.limit)
-        }
 
-        this.getResults(this.searchParam.offset)
-    }
-
-    nextPage()
-    {
-        this.searchParam.offset = (this.searchParam.offset + this.searchParam.limit)
-        this.getResults(this.searchParam.offset)
-    }
 
 }

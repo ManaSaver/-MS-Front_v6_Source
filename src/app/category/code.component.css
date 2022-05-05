@@ -15,6 +15,7 @@
     line-height: 130%;
     background: #23241f;
     color: #f8f8f2;
+    min-height: 13px;
 }
 
 /* Підсвітка коду: */
