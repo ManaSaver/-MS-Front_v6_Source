@@ -7,8 +7,9 @@ import { Directive, HostListener } from '@angular/core';
 
 export class RedirectFromSearchDirective
 {
+    /*
     @HostListener('click', ['$event']) onClick($event: any) {
        // console.info('clicked: ',  $event);
-    }
+    }*/
 }
 

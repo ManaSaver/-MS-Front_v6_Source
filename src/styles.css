@@ -114,3 +114,8 @@ blockquote {
 .CodeMirror {
     height: 400px !important;
 }
+
+.link {
+    color: #0475b5;
+    border-bottom: 1px dotted #0475b5;
+}

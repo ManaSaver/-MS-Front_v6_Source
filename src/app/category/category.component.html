@@ -525,10 +525,9 @@
                 <!-- /Назва категорії -->
             </div>
 
-            <div class="centered bumper-right disable-text-selection pointer category-menu-buttons" appClicks
+            <div class="centered bumper-right disable-text-selection pointer category-menu-buttons"
                  [class.category-active-menu-button]="ItemService.MenuService.menu.uuid == item.uuid"
                  (click)="ItemService.MenuService.openMenu(item.uuid)"
-                 [attr.uuid]="item.uuid"
             >
                 <div [innerHTML]="ItemService.IconService.icons.menu.svg | safeHtml" class="centered"></div>
             </div>

@@ -15,9 +15,11 @@ export class ClicksDirective
     {
 
     }
-
+/*
     @HostListener('click', ['$event']) onClick($event: any) {
-        console.info('clicked on clicks: ',  $event, this);
+       // console.info('clicked on clicks: ',  $event, this);
         //ItemService.MenuService.openMenu(item.uuid)
     }
+
+ */
 }

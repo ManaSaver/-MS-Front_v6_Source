@@ -17,7 +17,7 @@ export class SearchService
         description: '',
         src: '',
         tags: [],
-        limit: 10,
+        limit: 5,
         offset: 0,
 
         order_by: 'created_at',
@@ -49,7 +49,7 @@ export class SearchService
 
     search(data: any)
     {
-        console.log('search')
+
 
         this.HttpClient.post(this.ConfigService.backend + '/search?database=' + this.ConfigService.database, {
             headers: { 'Content-Type': 'application/json'},
@@ -57,9 +57,41 @@ export class SearchService
         }).subscribe( (response: any) => {
             console.log('search result', response)
             this.results = response.response_data
+
+            for(let item of this.results) {
+
+                item['bread_crumbs'] = []
+                item['parent_category'] = null
+                item['children'] = []
+
+                this.HttpClient.get(this.ConfigService.backend + '/bread_crumbs/' + item.uuid + '?database=' + this.ConfigService.database).subscribe( (response: any) => {
+                    item['bread_crumbs'] = response.response_data
+
+                    for(let breadcrumb of response.response_data) {
+                        if(breadcrumb.type == 'category') {
+                            item['parent_category'] = breadcrumb
+                        }
+                    }
+
+                },(error: any) => {
+                    // console.log('breadcrumbs error', error)
+                })
+
+                // console.log('result item:', item)
+                if(item.type == 'paragraph') {
+                    if(item.tags.includes('has_codes') || item.tags.includes('has_files')) {
+
+                    }
+                }
+               // url = this.ConfigService.backend + '/items/' + this.root.uuid + '?database=' + this.ConfigService.database
+            }
+
         }, (error: any) => {
             console.error('backup Request failed with error', error.error, error)
         })
+
+
+
 
 
     }

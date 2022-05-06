@@ -13,34 +13,7 @@ import { SearchService } from "../services/search.service";
 
 export class SearchComponent implements OnInit
 {
-    results: any = []
 
-    searchParam: any = {
-        type: 'all',
-        title: '',
-        description: '',
-        src: '',
-        tags: [],
-        limit: 10,
-        offset: 0,
-
-        order_by: 'created_at',
-        sort: 'desc',
-    }
-
-    lang: string = 'php'
-    attachment: string = ''
-
-    visibleInputs: any = {
-        all: ['title', 'description', 'src', 'tags'],
-        category: ['title', 'description'],
-        title: ['title'],
-        paragraph: ['description', 'attachment'],
-        code: ['title', 'description', 'tags', 'lang'],
-        file: ['title', 'description', 'src', 'tags'],
-    }
-
-    tagsString: string = ''
 
 
     constructor
@@ -55,7 +28,7 @@ export class SearchComponent implements OnInit
     ngOnInit(): void
     {
         this.Title.setTitle('Пошук дописів');
-        this.SearchService.getResults()
+        this.SearchService.getResults(this.SearchService.searchParam.offset)
 
     }
 

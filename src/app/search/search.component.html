@@ -60,7 +60,7 @@
                             Мова:
                         </div>
                         <div class="flex-grow stage-right">
-                            <select [(ngModel)]="attachment" (change)="SearchService.attachmentChange()">
+                            <select [(ngModel)]="SearchService.attachment" (change)="SearchService.attachmentChange()">
                                 <option [value]="''">Нічого</option>
                                 <option [value]="'has_codes'">Коди</option>
                                 <option [value]="'has_files'">Файли</option>
@@ -160,15 +160,15 @@
     </div>
 
     <div class="search-results flex-grow">
-        <div class="columns">
+        <div class="columns flex-grow">
             <div class="navigation rows">
-                <div class="" (click)="SearchService.prevPage()">PREV</div>
-                <div class="" (click)="SearchService.nextPage()">NEXT</div>
+                <div class="next-prev pointer" (click)="SearchService.prevPage()">PREV</div>
+                <div class="next-prev pointer" (click)="SearchService.nextPage()">NEXT</div>
                 <div class="">offset: {{SearchService.searchParam.offset}} | limit: {{SearchService.searchParam.limit}}</div>
             </div>
 
-            <div class="items columns" style="padding: 10px 5px; ">
-                <div class="result" *ngFor="let item of SearchService.results" style="margin: 10px 0px; ">
+            <div class="items columns flex-grow" style="padding: 10px 5px; ">
+                <div class="result" *ngFor="let item of SearchService.results">
 
                     <!-- Типи дописів: -->
                     <ng-container *ngIf="item.type == 'category'">
@@ -213,13 +213,14 @@
 <ng-template #CategoryTemplate let-item>
 
     <div class="columns">
-        <div class="">
-            {{item.type}} {{item.uuid}}
+        <ng-container *ngTemplateOutlet="itemBreadCrumbs; context:{ $implicit: item }"></ng-container>
+        <div class="result-content">
+            <div class="vertically-centered rows pointer" (click)="goToParentUUID(item.uuid)">
+                <div [innerHTML]="ItemService.IconService.icons.category.svg | safeHtml" class="centered" style="margin-right: 5px;" *ngIf="!item.tags.includes('last')"></div>
+                <div [innerHTML]="ItemService.IconService.icons.list.svg | safeHtml" class="centered" style="margin-right: 5px;" *ngIf="item.tags.includes('last')"></div>
+                <div class="link">{{item.title}}</div>
+            </div>
         </div>
-        <div class="">
-            {{item.title}}
-        </div>
-        <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
     </div>
 
 </ng-template>
@@ -237,10 +238,8 @@
 <ng-template #TitleTemplate let-item>
 
     <div class="columns">
-        <div class="">
-            {{item.type}} {{item.uuid}}
-        </div>
-        <div class="">
+        <ng-container *ngTemplateOutlet="itemBreadCrumbs; context:{ $implicit: item }"></ng-container>
+        <div class="result-content">
             {{item.title}}
         </div>
         <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
@@ -262,12 +261,26 @@
 <ng-template #ParagraphTemplate let-item>
 
     <div class="columns">
-        <div class="">
-            {{item.type}} {{item.uuid}}
+        <ng-container *ngTemplateOutlet="itemBreadCrumbs; context:{ $implicit: item }"></ng-container>
+        <div class="result-content">
+            <div class="flex-grow paragraph-content">
+                <div [innerHTML]="item.text | safeHtml" class="" *ngIf="item.text != null"></div>
+                <div *ngIf="item.text == null"></div>
+                <div *ngIf="item.text == ''"></div>
+            </div>
+
+            <!-- Дочірні коди: -->
+            <ng-container *ngIf="item.tags.includes('has_codes')">
+                has_codes
+            </ng-container>
+
+            <ng-container *ngIf="item.tags.includes('has_files')">
+                has_files
+            </ng-container>
+
+
         </div>
-        <div class="">
-            {{item.text}}
-        </div>
+
         <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
     </div>
 
@@ -287,10 +300,11 @@
 <ng-template #CodeTemplate let-item>
 
     <div class="columns">
-        <div class="">
-            {{item.type}} {{item.uuid}}
+        <ng-container *ngTemplateOutlet="itemBreadCrumbs; context:{ $implicit: item }"></ng-container>
+        <div class="result-content">
+            {{item.type}}: {{item.title}}
         </div>
-        <div class="">
+        <div class="result-content">
             {{item.text}}
         </div>
         <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
@@ -302,6 +316,38 @@
 ------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------->
 
+<ng-template #itemBreadCrumbs let-item>
+    <div class="rows bread-crumbs-outer">
+        <ng-container *ngFor="let breadItem of item.bread_crumbs; let isLast = last;">
+
+
+            <!-- Типи дописів: -->
+            <ng-container *ngIf="breadItem.type == 'category'">
+                <div class="bread-item pointer" (click)="goToParentUUID(breadItem.uuid)">
+                    <span class="link">{{breadItem.title}}</span> <ng-container *ngIf="!isLast"> — </ng-container>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="breadItem.type == 'title'">
+                <div class="bread-item">
+                    {{breadItem.title}} <ng-container *ngIf="!isLast"> — </ng-container>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="breadItem.type == 'paragraph'">
+                <div class="bread-item">
+                    p <ng-container *ngIf="!isLast"> — </ng-container>
+                </div>
+            </ng-container>
+
+
+        </ng-container>
+    </div>
+</ng-template>
+
 <ng-template #itemFooter let-item>
-    <div class="pointer item-footer redirect-to-item">перейти</div>
+    <ng-container *ngIf="item.parent_category != null">
+        <div class="pointer item-footer redirect-to-item" (click)="goToParentUUID(item.parent_category.uuid)">перейти</div>
+    </ng-container>
+
 </ng-template>
