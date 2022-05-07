@@ -31,4 +31,9 @@ export class AppComponent
         this.router.navigate(['/search'])
     }
 
+    goToTop()
+    {
+        window.scrollTo({top: -20, behavior: 'smooth'});
+    }
+
 }

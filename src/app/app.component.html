@@ -35,7 +35,7 @@
 
 
 <div class="sticky-menu columns centered">
-    <div class="pointer" [innerHTML]="ItemService.IconService.icons.arrow_up.svg | safeHtml"></div>
+    <div class="pointer" [innerHTML]="ItemService.IconService.icons.arrow_up.svg | safeHtml" (click)="goToTop()"></div>
     <div class="pointer" [innerHTML]="ItemService.IconService.icons.search.svg | safeHtml" (click)="goToSearchPage()"></div>
     <!-- <div class="pointer" [innerHTML]="ItemService.IconService.icons.backup.svg | safeHtml"></div> -->
 </div>

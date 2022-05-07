@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { ItemService } from "../services/item.service";
+import { SearchService } from "../services/search.service";
 
 @Component({
     selector: 'app-category',
@@ -27,6 +28,7 @@ export class CategoryComponent implements OnInit
         private router: Router,
         private route: ActivatedRoute,
         public ItemService: ItemService,
+        private SearchService: SearchService,
     )
     {
         this.route.params.subscribe(obj => {
@@ -49,6 +51,11 @@ export class CategoryComponent implements OnInit
 
     ngOnChanges() {}
     ngOnDestroy() {}
+
+    ngAfterViewChecked()
+    {
+
+    }
 
     setSidebarPosition()
     {
@@ -138,6 +145,12 @@ export class CategoryComponent implements OnInit
 
         }
 
+    }
+
+    searchCodeByTag(tag: string)
+    {
+        this.SearchService.searchCodeByTag(tag)
+        this.router.navigate(['/search'])
     }
 
 

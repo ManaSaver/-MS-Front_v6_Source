@@ -137,6 +137,11 @@ export class EditComponent implements OnInit
         });
     }
 
+    ngAfterViewInit()
+    {
+
+    }
+
     ngOnDestroy()
     {
         this.itemsSubscription.unsubscribe();

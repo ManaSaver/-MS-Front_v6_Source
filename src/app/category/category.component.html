@@ -106,7 +106,7 @@
         <ng-container *ngIf="item.type == type">
             <div class="sidebar-title-outer disable-text-selection">
                 <div class="sidebar-title-indent" [style]="'width: ' + indent * 15 + 'px;'"></div>
-                <div [style.margin-left]="indent * 20 + 'px'" [class.first-level-title]="indent == 1" [class.second-level-title]="indent > 1" class="pointer">{{item.title}}</div>
+                <div [style.margin-left]="indent * 20 + 'px'" [class.first-level-title]="indent == 1" [class.second-level-title]="indent > 1" class="pointer" (click)="ItemService.MenuService.scrollTo(item.uuid, 'uuid')">{{item.title}}</div>
                 <ng-container *ngIf="item.type == 'title'">
                     <ng-container *ngTemplateOutlet="SidebarItemTemplate; context:{ $implicit: item.children, type: item.type, indent: indent + 1  }"></ng-container>
                 </ng-container>
@@ -285,7 +285,7 @@
                 <div class="centered menu-title">
                 </div>
                 <div class="">
-                    <app-button [text]="'Редагувати'" [icon_name]="'edit'" (click)="ItemService.MenuService.openEditing(item.uuid)"></app-button>
+                    <app-button [text]="'Редагувати'" [icon_name]="'edit'" (click)="ItemService.MenuService.openEditing(item.uuid);"></app-button>
                 </div>
             </div>
             <!-- /Редагування -->
@@ -502,7 +502,7 @@
                 <div class="category-order-index centered">{{item.order_index}}</div>
 
                 <!-- Назва категорії: -->
-                <div class="flex-grow rows category-item-text vertically-centered" (click)="goToParentUUID(item.uuid)">
+                <div class="flex-grow rows category-item-text vertically-centered" (click)="goToParentUUID(item.uuid)" [attr.uuid]="item.uuid">
 
                     <ng-container *ngIf="item.hasOwnProperty('tags')">
                         <ng-container *ngIf="isArray(item.tags)">
@@ -605,7 +605,7 @@
             <div class="space-between flex-grow title-background">
 
                 <!-- Назва титулу --->
-                <div class="rows relative">
+                <div class="rows relative" [attr.uuid]="item.uuid">
                     <ng-container *ngIf="indent == 0"><div class="title-name-first-level centered">{{item.title}}</div></ng-container>
                     <ng-container *ngIf="indent > 0"><div class="title-name-second-level centered">{{item.title}}</div></ng-container>
                     <div class="title-order-index">{{item.order_index}}</div>
@@ -629,7 +629,6 @@
         <!-- Редагування: -->
         <app-edit [item]="item" [indent]="1"></app-edit>
         <!-- /Редагування -->
-
 
         <!-- Дочірні дописи титула: -->
         <ng-container *ngIf="item.children.length > 0">
@@ -699,8 +698,8 @@
         <!-- /Створення наступного допису -->
 
 
-        <div class="rows ">
-            <div class="flex-grow paragraph-content">
+        <div class="rows">
+            <div class="flex-grow paragraph-content" [attr.uuid]="item.uuid">
                 <div [innerHTML]="item.text | safeHtml" class="" *ngIf="item.text != null"></div>
                 <div *ngIf="item.text == null"></div>
                 <div *ngIf="item.text == ''"></div>
@@ -830,7 +829,7 @@
                     </div>
 
                     <div class="rows centered">
-                        <div *ngFor="let tag of item.tags" class="code-tag-in-footer pointer">
+                        <div *ngFor="let tag of item.tags" class="code-tag-in-footer pointer" (click)="searchCodeByTag(tag)">
                             {{tag}}
                         </div>
                     </div>

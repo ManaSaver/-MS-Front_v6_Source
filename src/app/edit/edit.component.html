@@ -3,7 +3,7 @@
 
     [ngClass]="['title-create-outer', ItemService.MenuService.editing.uuid == item.uuid ? 'menu active_menu' : 'menu not_active_menu']"
      [style.margin-left]="(indent * 20) + 'px'"
-
+    [attr.edit-uuid]="item.uuid"
 >
 
     <ng-container *ngIf="ItemService.MenuService.editing.is_opened && ItemService.MenuService.editing.uuid == item.uuid">

@@ -8,7 +8,10 @@ import { SearchService } from "../services/search.service";
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.css']
+    styleUrls: ['./search.component.css'],
+    host: {
+        '(document:keydown)': 'handleKeyboardEvents($event)'
+    }
 })
 
 export class SearchComponent implements OnInit
@@ -44,6 +47,90 @@ export class SearchComponent implements OnInit
         }
     }
 
+    copyToClipboard(text: string)
+    {
 
+        // navigator clipboard api needs a secure context (https)
+        if (navigator.clipboard && window.isSecureContext) {
+            // navigator clipboard api method'
+            //his.copiedIcon = true;
+            setTimeout(() => {
+                //this.copiedIcon = false;
+            }, 1000);
+
+            return navigator.clipboard.writeText(text);
+        } else {
+            // text area method
+            let textArea = document.createElement("textarea");
+            textArea.value = text;
+
+            // make the textarea out of viewport
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            // this.copiedIcon = true;
+            setTimeout(() => {
+                //  this.copiedIcon = false;
+            }, 1000);
+
+
+            return new Promise((res, rej) : void => {
+                // here the magic happens
+                //document.execCommand('copy') ? res() : rej();
+                document.execCommand('copy');
+                textArea.remove();
+            });
+
+        }
+
+    }
+
+    searchCodeByTag(tag: string)
+    {
+        this.SearchService.searchCodeByTag(tag)
+    }
+
+    textEllipsis(str: string, maxLength: number, { side = "end", ellipsis = "..." } = {})
+    {
+        if(str == null) {
+            return ''
+        }
+
+        if (str.length > maxLength) {
+            switch (side) {
+                case "start":
+                    return ellipsis + str.slice(-(maxLength - ellipsis.length));
+                case "end":
+                default:
+                    return str.slice(0, maxLength - ellipsis.length) + ellipsis;
+            }
+        }
+        return str;
+    }
+
+    handleKeyboardEvents(event: KeyboardEvent) {
+        /*
+        if(event.ctrlKey && event.keyCode == 37) {
+            // left
+            this.SearchService.prevPage()
+        }
+        if(event.ctrlKey && event.keyCode == 39) {
+            // right
+            this.SearchService.nextPage()
+        }
+        */
+        if(event.keyCode == 37) {
+            // left
+            this.SearchService.prevPage()
+        }
+        if(event.keyCode == 39) {
+            // right
+            this.SearchService.nextPage()
+        }
+
+    }
 
 }

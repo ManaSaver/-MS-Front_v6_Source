@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ConfigService }    from "./config.service";
+import { MenuService }    from "./menu.service";
 
 @Injectable({
     providedIn: 'root'
@@ -24,7 +25,7 @@ export class SearchService
         sort: 'desc',
     }
 
-    lang: string = 'php'
+    lang: string = 'any'
     attachment: string = ''
 
     visibleInputs: any = {
@@ -42,6 +43,7 @@ export class SearchService
     (
         private HttpClient      : HttpClient,
         public ConfigService    : ConfigService,
+        public MenuService      : MenuService,
     )
     {
 
@@ -80,7 +82,23 @@ export class SearchService
                 // console.log('result item:', item)
                 if(item.type == 'paragraph') {
                     if(item.tags.includes('has_codes') || item.tags.includes('has_files')) {
+                        this.HttpClient.get(this.ConfigService.backend + '/items/' + item.uuid + '?database=' + this.ConfigService.database).subscribe( (response: any) => {
 
+
+                            for(let child of response.response_data) {
+                                if(child.type == 'code' || child.type == 'file') {
+                                    item['children'].push(child)
+                                }
+                            }
+
+                            if (item['children'].length > 0) {
+                                 this.MenuService.codeTabs[item.uuid] = item['children'][0].uuid
+                            }
+
+
+                        },(error: any) => {
+                            // console.log('breadcrumbs error', error)
+                        })
                     }
                 }
                // url = this.ConfigService.backend + '/items/' + this.root.uuid + '?database=' + this.ConfigService.database
@@ -89,8 +107,6 @@ export class SearchService
         }, (error: any) => {
             console.error('backup Request failed with error', error.error, error)
         })
-
-
 
 
 
@@ -223,6 +239,26 @@ export class SearchService
     {
         this.searchParam.offset = (this.searchParam.offset + this.searchParam.limit)
         this.getResults(this.searchParam.offset)
+    }
+
+    searchCodeByTag(tag: string)
+    {
+        this.searchParam =  {
+            type: 'code',
+            title: '',
+            description: '',
+            src: '',
+            tags: [tag],
+            limit: 5,
+            offset: 0,
+
+            order_by: 'created_at',
+            sort: 'desc',
+        }
+
+        this.tagsString = tag
+
+        this.getResults()
     }
 
 

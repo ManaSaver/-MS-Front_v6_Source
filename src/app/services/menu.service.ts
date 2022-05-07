@@ -102,6 +102,10 @@ export class MenuService
         this.closeMenu()
         this.closeCreating()
 
+        setTimeout( () => {
+            this.scrollTo(this.editing.uuid, 'edit-uuid', 50)
+        }, 150)
+
         // console.log('open editing', this.editing)
     }
 
@@ -169,6 +173,19 @@ export class MenuService
 
         this.closeCreating()
         this.closeEditing()
+    }
+
+    scrollTo(uuid: string, tag: string, top: number = 20)
+    {
+        const element = document.querySelector('[' + tag + '="' + uuid + '"]');
+        if (element) {
+            // console.log('success scrollTo:', uuid)
+            window.scrollTo({top: element.getBoundingClientRect().top + window.pageYOffset - top, behavior: 'smooth'});
+            return true;
+        }
+
+        return false;
+
     }
 
 

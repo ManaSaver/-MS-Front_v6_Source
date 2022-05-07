@@ -57,13 +57,13 @@
                 <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('attachment')">
                     <div class="rows stage" style="margin: 8px 0px 17px 0px;">
                         <div class="vertically-centered stage-left" style="margin: 0px 12px;">
-                            Мова:
+                            Вміст:
                         </div>
                         <div class="flex-grow stage-right">
                             <select [(ngModel)]="SearchService.attachment" (change)="SearchService.attachmentChange()">
-                                <option [value]="''">Нічого</option>
-                                <option [value]="'has_codes'">Коди</option>
-                                <option [value]="'has_files'">Файли</option>
+                                <option [value]="''">Будь-який</option>
+                                <option [value]="'has_codes'">З кодами</option>
+                                <option [value]="'has_files'">З файлами</option>
                             </select>
                         </div>
                     </div>
@@ -92,6 +92,7 @@
                         </div>
                         <div class="flex-grow stage-right">
                             <select [(ngModel)]="SearchService.lang" (change)="SearchService.langChange()">
+                                <option [value]="'any'">Будь-яка</option>
                                 <option [value]="'php'">php</option>
                                 <option [value]="'js'">js</option>
                                 <option [value]="'css'">css</option>
@@ -184,7 +185,7 @@
                     </ng-container>
 
                     <ng-container *ngIf="item.type == 'code'">
-                        <ng-container *ngTemplateOutlet="CodeTemplate; context:{ $implicit: item }"></ng-container>
+                        <ng-container *ngTemplateOutlet="SingleCodeTemplate; context:{ $implicit: item }"></ng-container>
                     </ng-container>
 
                     <!-- / Типи дописів -->
@@ -260,6 +261,7 @@
 -->
 <ng-template #ParagraphTemplate let-item>
 
+
     <div class="columns">
         <ng-container *ngTemplateOutlet="itemBreadCrumbs; context:{ $implicit: item }"></ng-container>
         <div class="result-content">
@@ -271,7 +273,34 @@
 
             <!-- Дочірні коди: -->
             <ng-container *ngIf="item.tags.includes('has_codes')">
-                has_codes
+
+                <!-- Таби кодів: -->
+                <div class="rows code-tabs-outer">
+                    <ng-container *ngIf="item.children.length > 0">
+                        <ng-container *ngFor="let child of item.children">
+                            <div class="rows code-tab pointer"
+                                 (click)="ItemService.MenuService.activateCodeTab(item.uuid, child.uuid)"
+                                 [class.active-code-tab]="ItemService.MenuService.codeTabs[item.uuid] == child.uuid &&
+                            ItemService.MenuService.creating.parent_uuid != item.uuid"
+                            >
+                                <ng-container *ngIf="child.title == null">{{child.order_index}}</ng-container>
+                                <ng-container *ngIf="child.title != null">{{textEllipsis(child.title, 30)}}</ng-container>
+
+                            </div>
+                        </ng-container>
+                    </ng-container>
+
+                </div>
+                <!-- /Таби кодів -->
+
+
+                <!-- Відображення дочірніх кодів: -->
+                <ng-container *ngIf="item.children.length > 0">
+                    <ng-container *ngFor="let child of item.children">
+                        <ng-container *ngTemplateOutlet="CodeTemplate; context:{ $implicit:child }"></ng-container>
+                    </ng-container>
+                </ng-container>
+                <!-- /Відображення дочірніх кодів -->
             </ng-container>
 
             <ng-container *ngIf="item.tags.includes('has_files')">
@@ -297,15 +326,53 @@
 ------------------------------------------------------------------------------------------------------------------------
    ШАБЛОН КОДУ
 -->
-<ng-template #CodeTemplate let-item>
+<ng-template #SingleCodeTemplate let-item>
 
     <div class="columns">
         <ng-container *ngTemplateOutlet="itemBreadCrumbs; context:{ $implicit: item }"></ng-container>
+
+
         <div class="result-content">
-            {{item.type}}: {{item.title}}
-        </div>
-        <div class="result-content">
-            {{item.text}}
+
+            <!-- Таби кодів: -->
+            <div class="rows code-tabs-outer">
+                <div class="rows code-tab">
+                    <ng-container *ngIf="item.title == null">{{item.order_index}}</ng-container>
+                    <ng-container *ngIf="item.title != null">{{item.title}}</ng-container>
+
+                </div>
+            </div>
+            <!-- /Таби кодів -->
+
+            <div class="code-outer">
+                <code
+                      [highlight]="item.text"
+                      [lineNumbers]="true"
+                      [languages]="[ItemService.codeLanguages.includes(item.src) ? item.src : 'php']"
+                ></code>
+                <div class="code-lang">{{item.src}}</div>
+            </div>
+
+            <div class="space-between code-footer" style="background: #001d24; border-radius: 0px 0px 5px 5px;">
+
+                <div class="rows pointer" (click)="copyToClipboard(item.text)"
+                     style="padding: 2px 10px;"
+                >
+                    <div class="centered" [innerHTML]="ItemService.IconService.icons.copy.svg | safeHtml"></div>
+                    <div class="centered" style="padding: 7px 2px;">Копіювати</div>
+                </div>
+
+                <div class="rows centered">
+                    <div *ngFor="let tag of item.tags" class="code-tag-in-footer pointer" (click)="searchCodeByTag(tag)">
+                        {{tag}}
+                    </div>
+                </div>
+
+                <div class="rows centered"></div>
+
+            </div>
+
+
         </div>
         <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
     </div>
@@ -324,22 +391,23 @@
             <!-- Типи дописів: -->
             <ng-container *ngIf="breadItem.type == 'category'">
                 <div class="bread-item pointer" (click)="goToParentUUID(breadItem.uuid)">
-                    <span class="link">{{breadItem.title}}</span> <ng-container *ngIf="!isLast"> — </ng-container>
+                    <span class="link">{{breadItem.title}}</span>
                 </div>
+
             </ng-container>
 
             <ng-container *ngIf="breadItem.type == 'title'">
-                <div class="bread-item">
-                    {{breadItem.title}} <ng-container *ngIf="!isLast"> — </ng-container>
+                <div class="bread-item">{{breadItem.title}}
                 </div>
             </ng-container>
 
             <ng-container *ngIf="breadItem.type == 'paragraph'">
-                <div class="bread-item">
-                    p <ng-container *ngIf="!isLast"> — </ng-container>
-                </div>
+                <div class="bread-item">p</div>
             </ng-container>
 
+            <div class="bread-item pointer">
+                <ng-container *ngIf="!isLast"> — </ng-container>
+            </div>
 
         </ng-container>
     </div>
@@ -351,3 +419,69 @@
     </ng-container>
 
 </ng-template>
+
+
+
+
+
+
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН КОДІВ
+-->
+
+<ng-template #CodeTemplate let-item let-indent="indent">
+
+    <ng-container *ngIf="ItemService.MenuService.codeTabs.hasOwnProperty(item.parent_uuid)">
+        <ng-container *ngIf="ItemService.MenuService.codeTabs[item.parent_uuid] == item.uuid">
+
+            <div class="columns" style="padding: 0px 0px; border-right: 1px solid #d8dee4;">
+                <div class="code-outer">
+                    <code #codeElement
+                          [highlight]="item.text"
+                          [lineNumbers]="true"
+                          [languages]="[ItemService.codeLanguages.includes(item.src) ? item.src : 'php']"
+                    ></code>
+
+                    <div class="code-lang">{{item.src}}</div>
+                </div>
+
+                <div class="space-between code-footer" style="background: #001d24; border-radius: 0px 0px 5px 5px;">
+
+                    <div class="rows pointer" (click)="copyToClipboard(item.text)"
+                         style="padding: 2px 10px;"
+                    >
+                        <div class="centered" [innerHTML]="ItemService.IconService.icons.copy.svg | safeHtml"></div>
+                        <div class="centered" style="padding: 7px 2px;">Копіювати</div>
+                    </div>
+
+                    <div class="rows centered">
+                        <div *ngFor="let tag of item.tags" class="code-tag-in-footer pointer" (click)="searchCodeByTag(tag)">
+                            {{tag}}
+                        </div>
+                    </div>
+
+                    <div class="rows centered">
+                    </div>
+
+                </div>
+            </div>
+
+        </ng-container>
+    </ng-container>
+
+
+</ng-template>
+<!--
+   / ШАБЛОН КОДІВ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
