@@ -47,6 +47,16 @@ export class SearchComponent implements OnInit
         }
     }
 
+    goToTitle(categoryUUID: string, uuid: string)
+    {
+        if(uuid == null || uuid == '') {
+            this.router.navigate(['/'])
+        } else {
+            this.router.navigate(['category/' + categoryUUID])
+            this.ItemService.MenuService.deferredScroll(uuid)
+        }
+    }
+
     copyToClipboard(text: string)
     {
 

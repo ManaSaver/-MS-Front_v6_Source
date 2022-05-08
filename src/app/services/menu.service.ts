@@ -48,6 +48,7 @@ export class MenuService
         //
     }
 
+    deferredScrollToUUID: null | string = null
 
 
     constructor
@@ -186,6 +187,20 @@ export class MenuService
 
         return false;
 
+    }
+
+    deferredScroll(uuid: string, numberOfAttempts: number = 10, delay: number = 10)
+    {
+        this.deferredScrollToUUID = uuid
+
+        for(let i = 1; i <= numberOfAttempts; i++) {
+            setTimeout( () => {
+                if(this.deferredScrollToUUID != null) {
+                    this.scrollTo(this.deferredScrollToUUID, 'uuid', 20)
+                    this.deferredScrollToUUID = null
+                }
+            }, delay * 10)
+        }
     }
 
 

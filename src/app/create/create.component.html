@@ -12,7 +12,9 @@
 
                 <!-- шаблон створення категорії: -->
                 <ng-container *ngIf="ItemService.MenuService.creating.type == 'category'">
-                    <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+                    <div style="margin-bottom: 10px;">
+                        <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+                    </div>
                 </ng-container>
                 <!-- /шаблон створення категорії -->
 
@@ -38,7 +40,9 @@
 
                 <!-- шаблон створення категорії: -->
                 <ng-container *ngIf="ItemService.MenuService.creating.type == 'category'">
-                    <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+                    <div style="margin-bottom: 10px;">
+                        <ng-container *ngTemplateOutlet="CreateCategoryTemplate"></ng-container>
+                    </div>
                 </ng-container>
                 <!-- /шаблон створення категорії -->
 

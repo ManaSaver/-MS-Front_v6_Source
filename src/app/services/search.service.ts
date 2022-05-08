@@ -67,7 +67,20 @@ export class SearchService
                 item['children'] = []
 
                 this.HttpClient.get(this.ConfigService.backend + '/bread_crumbs/' + item.uuid + '?database=' + this.ConfigService.database).subscribe( (response: any) => {
+
+                    let lastCategory = null
+
+                    for(let breadcrumb of response.response_data) {
+                        if(breadcrumb.type == 'category') {
+                            breadcrumb.parent_category = null
+                            lastCategory = breadcrumb
+                        } else {
+                            breadcrumb.parent_category = lastCategory
+                        }
+                    }
+
                     item['bread_crumbs'] = response.response_data
+
 
                     for(let breadcrumb of response.response_data) {
                         if(breadcrumb.type == 'category') {

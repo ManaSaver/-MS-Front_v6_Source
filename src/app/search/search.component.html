@@ -243,7 +243,9 @@
         <div class="result-content">
             {{item.title}}
         </div>
-        <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
+        <ng-container *ngIf="item.parent_category != null">
+            <div class="pointer item-footer redirect-to-item" (click)="goToTitle(item.parent_category.uuid, item.uuid)">перейти</div>
+        </ng-container>
     </div>
 
 </ng-template>
@@ -397,7 +399,8 @@
             </ng-container>
 
             <ng-container *ngIf="breadItem.type == 'title'">
-                <div class="bread-item">{{breadItem.title}}
+                <div class="bread-item pointer" (click)="goToTitle(breadItem.parent_category.uuid, breadItem.uuid)">
+                    <span class="link">{{breadItem.title}}</span>
                 </div>
             </ng-container>
 
