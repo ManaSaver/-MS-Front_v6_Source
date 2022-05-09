@@ -11,9 +11,18 @@
 .search-content {
 
 }
+
 .search-sidebar {
 
 }
+
+
+.form-title {
+    font-family: OpenSans-Bold;
+    font-size: 12px;
+}
+
+
 .search-results {
     background: #ebebeb;
 }
@@ -36,7 +45,7 @@
 .sidebar { display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid #d8dee4; }
 .sidebar-inner { display: flex; flex-direction: column;  }
 .fixed {
-    flex: 0 0 300px; height: calc(100vh - 37px);
+    flex: 0 0 220px; height: calc(100vh - 37px);
     overflow-y: auto; overflow-x: hidden; position: sticky;
     top: 0; transition: flex .2s ease-out;
 }

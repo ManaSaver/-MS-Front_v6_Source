@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 
 export class ConfigService
 {
-    msVersion: string = '6.0.3' // версія програми
+    msVersion: string = '6.0.4' // версія програми
 
     sidebarPosition = 'right'; // enum: [left, right]
 

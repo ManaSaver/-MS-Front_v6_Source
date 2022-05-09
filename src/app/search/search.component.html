@@ -10,8 +10,13 @@
             <div class="sidebar-content">
 
                 <!-- ВИБІР ТИПУ ДОПИСУ: --->
-                <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                    <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                <div class="rows columns"
+style="
+    background: #f3f3f3;
+    padding: 8px 0px 17px 17px;
+    border-bottom: 1px solid #e7e7e7;
+">
+                    <div class="vertically-centered form-title">
                         Тип допису:
                     </div>
                     <div class="flex-grow stage-right">
@@ -29,8 +34,8 @@
 
                 <!-- Пошук у титулі: --->
                 <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('title')">
-                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                    <div class="columns stage" style="margin: 8px 0px 17px 17px;">
+                        <div class="vertically-centered form-title">
                             Титул:
                         </div>
                         <div class="flex-grow stage-right">
@@ -42,8 +47,8 @@
 
                 <!-- Пошук у описі: --->
                 <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('description')">
-                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                    <div class="columns stage" style="margin: 8px 0px 17px 17px;">
+                        <div class="vertically-centered form-title">
                             Опис:
                         </div>
                         <div class="flex-grow stage-right">
@@ -55,8 +60,8 @@
 
                 <!-- Пошук у attachment: --->
                 <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('attachment')">
-                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                    <div class="columns stage" style="margin: 8px 0px 17px 17px;">
+                        <div class="vertically-centered form-title">
                             Вміст:
                         </div>
                         <div class="flex-grow stage-right">
@@ -73,8 +78,8 @@
 
                 <!-- Пошук у src: --->
                 <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('src')">
-                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                    <div class="columns stage" style="margin: 8px 0px 17px 17px;">
+                        <div class="vertically-centered form-title">
                             src:
                         </div>
                         <div class="flex-grow stage-right">
@@ -86,8 +91,8 @@
 
                 <!-- Пошук у lang: --->
                 <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('lang')">
-                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                    <div class="columns stage" style="margin: 8px 0px 17px 17px;">
+                        <div class="vertically-centered form-title">
                             Мова:
                         </div>
                         <div class="flex-grow stage-right">
@@ -110,14 +115,20 @@
 
                 <!-- Пошук у тегах: --->
                 <ng-container *ngIf="SearchService.visibleInputs[SearchService.searchParam.type].includes('tags')">
-                    <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                        <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                    <div class="columns stage" style="margin: 8px 0px 17px 17px;">
+                        <div class="vertically-centered form-title">
                             Теги:
                         </div>
                         <div class="flex-grow stage-right">
-                            <input type="text" class="input_text" maxlength="100" [(ngModel)]="SearchService.tagsString" (keyup)="SearchService.tagsChange()">
+                            <input type="text" class="input_text" maxlength="100"
+                                   [(ngModel)]="SearchService.tagsString"
+                                   (keyup)="SearchService.tagsChange()">
+
+                        </div>
+                        <div class="flex-grow stage-right" style="font-size: 10px;">
                             через кому ("то" і "то)
                         </div>
+
                     </div>
                 </ng-container>
                 <!-- /Пошук у тегах --->
@@ -126,8 +137,8 @@
 
 
                 <!-- СОРТУВАННЯ --->
-                <div class="rows stage" style="margin: 8px 0px 17px 0px; border-top: 1px solid #b0b0b0; padding-top: 5px;">
-                    <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                <div class="columns stage" style="border-top: 1px solid #b0b0b0; background: #f3f3f3; padding: 8px 0px 12px 17px; border-bottom: 1px solid #e7e7e7; ">
+                    <div class="vertically-centered form-title">
                         Сортувати за:
                     </div>
                     <div class="flex-grow stage-right">
@@ -138,8 +149,8 @@
                     </div>
                 </div>
 
-                <div class="rows stage" style="margin: 8px 0px 17px 0px;">
-                    <div class="vertically-centered stage-left" style="margin: 0px 12px;">
+                <div class="columns stage" style="background: #f3f3f3; padding: 8px 0px 12px 17px; border-bottom: 1px solid #e7e7e7;">
+                    <div class="vertically-centered form-title">
                         Сортувати за:
                     </div>
                     <div class="flex-grow stage-right">
@@ -202,8 +213,6 @@
 
     </div>
 </div>
-
-<div class="search-footer">search-footer</div>
 
 
 
@@ -405,7 +414,9 @@
             </ng-container>
 
             <ng-container *ngIf="breadItem.type == 'paragraph'">
-                <div class="bread-item">p</div>
+                <div class="bread-item pointer" (click)="goToTitle(breadItem.parent_category.uuid, breadItem.uuid)">
+                    <span class="link">p</span>
+                </div>
             </ng-container>
 
             <div class="bread-item pointer">
@@ -418,7 +429,27 @@
 
 <ng-template #itemFooter let-item>
     <ng-container *ngIf="item.parent_category != null">
-        <div class="pointer item-footer redirect-to-item" (click)="goToParentUUID(item.parent_category.uuid)">перейти</div>
+
+        <ng-container *ngIf="item.type == 'category'">
+            <div class="pointer item-footer redirect-to-item" (click)="goToParentUUID(item.uuid)">перейти у категорію</div>
+        </ng-container>
+
+        <ng-container *ngIf="item.type == 'title'">
+            <div class="pointer item-footer redirect-to-item" (click)="goToTitle(item.parent_category.uuid, item.uuid)">перейти до титулу</div>
+        </ng-container>
+
+        <ng-container *ngIf="item.type == 'paragraph'">
+            <div class="pointer item-footer redirect-to-item" (click)="goToTitle(item.parent_category.uuid, item.uuid)">перейти до параграфу</div>
+        </ng-container>
+
+        <ng-container *ngIf="item.type == 'code'">
+            <div class="pointer item-footer redirect-to-item" (click)="goToTitle(item.parent_category.uuid, item.parent_uuid)">перейти до коду</div>
+        </ng-container>
+
+        <ng-container *ngIf="item.type == 'file'">
+            <div class="pointer item-footer redirect-to-item" (click)="goToTitle(item.parent_category.uuid, item.parent_uuid)">перейти до файлу</div>
+        </ng-container>
+
     </ng-container>
 
 </ng-template>
