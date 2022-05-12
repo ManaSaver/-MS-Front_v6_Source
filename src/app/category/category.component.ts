@@ -14,6 +14,7 @@ import { SearchService } from "../services/search.service";
         './title.component.css',
         './paragraph.component.css',
         './code.component.css',
+        './files.component.css',
     ]
 })
 

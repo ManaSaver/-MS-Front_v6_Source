@@ -173,10 +173,11 @@ style="
 
     <div class="search-results flex-grow">
         <div class="columns flex-grow">
-            <div class="navigation rows">
+
+            <div class="navigation rows" style="margin: 18px 0px 0px 20px">
                 <div class="next-prev pointer" (click)="SearchService.prevPage()">PREV</div>
                 <div class="next-prev pointer" (click)="SearchService.nextPage()">NEXT</div>
-                <div class="">offset: {{SearchService.searchParam.offset}} | limit: {{SearchService.searchParam.limit}}</div>
+                <div class="" style="border: 1px solid #cfcfcf; margin: 2px 2px 2px 20px; padding: 4px 15px; background: #dfdfdf; border-radius: 12px;">offset: {{SearchService.searchParam.offset}} | limit: {{SearchService.searchParam.limit}}</div>
             </div>
 
             <div class="items columns flex-grow" style="padding: 10px 5px; ">
@@ -206,6 +207,12 @@ style="
 
 
                 </div>
+            </div>
+
+            <div class="navigation rows" style="margin: 0px 0px 20px 20px">
+                <div class="next-prev pointer" (click)="SearchService.prevPage()">PREV</div>
+                <div class="next-prev pointer" (click)="SearchService.nextPage()">NEXT</div>
+                <div class="" style="border: 1px solid #cfcfcf; margin: 2px 2px 2px 20px; padding: 4px 15px; background: #dfdfdf; border-radius: 12px;">offset: {{SearchService.searchParam.offset}} | limit: {{SearchService.searchParam.limit}}</div>
             </div>
 
         </div>

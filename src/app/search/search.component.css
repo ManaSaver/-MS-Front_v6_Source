@@ -107,6 +107,15 @@
     text-align: right;
 }
 
+.item-footer:hover {
+    background-color: #d6edfd;
+    border-top: 1px solid #c9e7ff;
+    border-bottom: 1px solid #c9e7ff;
+    border-left: 1px solid #c9e7ff;
+    border-right: 1px solid #c9e7ff;
+
+}
+
 .next-prev {
     margin: 2px 4px;
     padding: 4px 15px;
