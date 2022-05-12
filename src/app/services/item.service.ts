@@ -29,6 +29,7 @@ export class ItemService
 
     codeLanguages: any = ['php', 'js', 'typescript', 'css', 'xml', 'html', 'go', 'bash', 'sql']
 
+    fileUploadToParentUUID: string | null = null
 
     constructor
     (
@@ -435,6 +436,34 @@ export class ItemService
                 tags: ['has_codes'],
             }
         )
+
+    }
+
+    uploadFiles(files: any)
+    {
+        if(this.fileUploadToParentUUID == null) {
+            console.log('fileUploadToParentUUID error', this.fileUploadToParentUUID)
+        }
+
+        let data = {
+            'parent_uuid': this.fileUploadToParentUUID
+        }
+
+        const formData: FormData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append(i.toString(), files[i], files[i].name);
+        }
+
+        formData.append("data", JSON.stringify(data));
+
+        this.HttpClient.post(
+            this.ConfigService.backend + '/files' + '?database=' + this.ConfigService.database, formData
+        ).subscribe( (response: any) => {
+            console.log('file upload Request success', response)
+        }, (error: any) => {
+             console.error('update file Request failed with error', error.error, error)
+        })
 
     }
 

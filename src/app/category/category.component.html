@@ -772,7 +772,7 @@
 
 
         <ng-container *ngIf="item.tags.includes('has_files')">
-            <ng-container *ngTemplateOutlet="FilesTemplate; context:{ $implicit: item.children }"></ng-container>
+            <ng-container *ngTemplateOutlet="FilesTemplate; context:{ $implicit: item }"></ng-container>
         </ng-container>
 
         <!-- Створення наступного допису: -->
@@ -872,7 +872,7 @@
 ------------------------------------------------------------------------------------------------------------------------
    ШАБЛОН ФАЙЛІВ
 -->
-<ng-template #FilesTemplate let-items>
+<ng-template #FilesTemplate let-item>
 
     <div class="files">
 
@@ -907,11 +907,13 @@
 
         <div class="files-footer space-between">
             <div class=""></div>
-            <div class="pointer file-select-btn">add</div>
+            <div class="pointer file-select-btn" (click)="setFileUploadData(item); filesSelect.click();">add</div>
         </div>
 
     </div>
 </ng-template>
+
+<input type="file" multiple style="display: none" #filesSelect (change)="uploadFiles(filesSelect.files)">
 <!--
 ........................................................................................................................
 ........................................................................................................................

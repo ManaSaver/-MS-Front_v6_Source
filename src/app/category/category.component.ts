@@ -154,5 +154,17 @@ export class CategoryComponent implements OnInit
         this.router.navigate(['/search'])
     }
 
+    setFileUploadData(item: any)
+    {
+        this.ItemService.fileUploadToParentUUID = item.uuid
+        console.log('this.ItemService.fileUploadToParentUUID', this.ItemService.fileUploadToParentUUID)
+    }
+
+    uploadFiles(files: any)
+    {
+        console.log('upload files', files)
+        this.ItemService.uploadFiles(files)
+    }
+
 
 }
