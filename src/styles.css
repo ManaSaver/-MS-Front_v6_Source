@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/dracula';
-
+@import '~lightgallery/css/lightgallery-bundle';
 
 html, body {
     height: 100%;
@@ -119,3 +119,5 @@ blockquote {
     color: #0475b5;
     border-bottom: 1px dotted #0475b5;
 }
+
+

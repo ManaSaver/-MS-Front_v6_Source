@@ -102,7 +102,10 @@ export class EditComponent implements OnInit
                         this.tagsString = this.tagsArray.join(', ')
                     }
 
-
+                    if(this.newItem.type == 'file') {
+                        this.tagsArray = this.ItemService.items[this.item.uuid].tags
+                        this.tagsString = this.tagsArray.join(', ')
+                    }
 
                     this.orderIndex = this.ItemService.items[this.item.uuid].order_index
 
@@ -242,6 +245,9 @@ export class EditComponent implements OnInit
             this.newItem.tags = this.tagsArray
         }
 
+        if(this.newItem.type == 'file') {
+            this.newItem.tags = this.tagsArray
+        }
 
         console.log('update item', this.newItem)
 

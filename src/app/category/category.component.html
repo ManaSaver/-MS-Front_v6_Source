@@ -877,30 +877,42 @@
     <div class="files">
 
 
-        <div class="files-inner rows">
-            <div class="file-preview">
+        <div class="files-inner rows" *ngFor="let file of item.children">
+            <div class="file-preview centered">
+                <ng-container *ngIf="['jpg', 'png', 'gif'].includes(file.src.split('.').pop())">
+                    <lightgallery [settings]="lightGallerySettings">
+                        <a href="{{ItemService.ConfigService.backend + '/' + file.src}}">
+                            <img alt="{{file.title}}" src="{{ItemService.ConfigService.backend + '/' + file.src}}" class="file-preview-image">
+                        </a>
+                    </lightgallery>
+                </ng-container>
 
             </div>
             <div class="file-info columns">
                 <div class="file-title">
-                    file-title
+                    {{file.title}}
                 </div>
                 <div class="file-description">
-                    file-description
+                    {{file.text}}
                 </div>
                 <div class="file-meta space-between">
                     <div class="rows">
-                        <div class="file-extension">.zip</div>
-                        <div class="file-size">1.2 MB</div>
+                        <div class="file-extension">.{{file.src.split('.').pop()}}</div>
+                        <div class="file-size">{{ItemService.humanFileSize(file.likes)}}</div>
                     </div>
                     <div class="rows">
-                        <div class="file-tag">tag</div>
-                        <div class="file-tag">tag</div>
+                        <div class="file-tag" *ngFor="let tag of file.tags">{{tag}}</div>
                     </div>
                     <div class="rows">
-                        <div class="file-extension">download</div>
-                        <div class="file-size">edit</div>
+                        <div class="file-extension pointer"
+                             (click)="ItemService.downloadFile(ItemService.ConfigService.backend + '/' + file.src, file.uuid + '.' +  file.src.split('.').pop())">download</div>
+                        <div class="file-size pointer" (click)="ItemService.MenuService.openEditing(file.uuid);">edit</div>
                     </div>
+                </div>
+                <div class="">
+                    <!-- Редагування: -->
+                    <app-edit [item]="file" [indent]="0"></app-edit>
+                    <!-- /Редагування -->
                 </div>
             </div>
         </div>

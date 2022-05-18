@@ -66,3 +66,7 @@
 .file-tag {
     margin: 0px 3px;
 }
+
+.file-preview-image {
+    width: 100%;
+}

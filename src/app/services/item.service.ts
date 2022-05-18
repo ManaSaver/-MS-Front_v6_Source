@@ -10,6 +10,9 @@ import { SoundService  }    from "./sound.service";
 import { TinymceService } from "./tinymce.service";
 
 
+import * as FileSaver from 'file-saver';
+
+
 @Injectable({
     providedIn: 'root'
 })
@@ -460,11 +463,53 @@ export class ItemService
         this.HttpClient.post(
             this.ConfigService.backend + '/files' + '?database=' + this.ConfigService.database, formData
         ).subscribe( (response: any) => {
-            console.log('file upload Request success', response)
+            console.log('file upload Request success', response, data)
+            this.loadRoot()
         }, (error: any) => {
              console.error('update file Request failed with error', error.error, error)
         })
 
     }
+
+    humanFileSize(bytes: number, si=false, dp=1)
+    {
+        const thresh = si ? 1000 : 1024;
+
+        if (Math.abs(bytes) < thresh) {
+            return bytes + ' B';
+        }
+
+        const units = si
+            ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+            : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        let u = -1;
+        const r = 10**dp;
+
+        do {
+            bytes /= thresh;
+            ++u;
+        } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+        return bytes.toFixed(dp) + ' ' + units[u];
+    }
+
+    /**
+     * Щоб завантажувались файли, треба у нжинксі додати:
+     *
+     *  location ~* ^.+\.(?:css(\.map)?|js(\.map)?|zip|rar|jpe?g|png|gif|txt|ico|cur|heic|webp|tiff?|mp3|m4a|aac|ogg|midi?|wav|mp4|mov|webm|mpe?g|avi|ogv|flv|wmv|svgz?|ttf|ttc|otf|eot|woff2?)$ {
+		add_header Access-Control-Allow-Origin *;
+    }
+     */
+    downloadFile(link: string, filename: string)
+    {
+        fetch(link).then( (response: any) => {
+            return response.blob().then((blob: any) => {
+                FileSaver.saveAs(blob, filename)
+            });
+        })
+    }
+
+
 
 }

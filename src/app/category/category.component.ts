@@ -4,6 +4,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ItemService } from "../services/item.service";
 import { SearchService } from "../services/search.service";
 
+import lgZoom from 'lightgallery/plugins/zoom';
+import fullscreen from 'lightgallery/plugins/fullscreen';
+import rotate from 'lightgallery/plugins/rotate';
+
 @Component({
     selector: 'app-category',
     templateUrl: './category.component.html',
@@ -24,12 +28,21 @@ export class CategoryComponent implements OnInit
 
     indentPixels = 40;
 
+    lightGallerySettings = {
+        plugins: [lgZoom, fullscreen, rotate],
+        speed: 100, backdropDuration: 100, defaultCaptionHeight: 1,
+        showCloseIcon: true,
+        flipHorizontal: true,
+        hideScrollbar : true,
+        licenseKey: "1234-1234-123-1234"
+    };
+
     constructor
     (
         private router: Router,
         private route: ActivatedRoute,
         public ItemService: ItemService,
-        private SearchService: SearchService,
+        private SearchService: SearchService
     )
     {
         this.route.params.subscribe(obj => {
@@ -166,5 +179,18 @@ export class CategoryComponent implements OnInit
         this.ItemService.uploadFiles(files)
     }
 
+    download(link: string)
+    {
+       // window.location.href = link
 
+        var element = document.createElement('a');
+        element.setAttribute('href', link);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
 }

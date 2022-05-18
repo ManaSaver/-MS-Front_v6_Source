@@ -1,12 +1,17 @@
+<ng-container *ngIf="newItem.type == 'file'; else CommonEditTemplate">
+    <ng-container *ngTemplateOutlet="fileEditTemplate"></ng-container>
+</ng-container>
 
-<div
 
-    [ngClass]="['title-create-outer', ItemService.MenuService.editing.uuid == item.uuid ? 'menu active_menu' : 'menu not_active_menu']"
-     [style.margin-left]="(indent * 20) + 'px'"
-    [attr.edit-uuid]="item.uuid"
->
+<ng-template #fileEditTemplate>
+    <div
 
-    <ng-container *ngIf="ItemService.MenuService.editing.is_opened && ItemService.MenuService.editing.uuid == item.uuid">
+        [ngClass]="[ItemService.MenuService.editing.uuid == item.uuid ? 'menu active_menu' : 'menu not_active_menu']"
+        [style.margin-left]="(indent * 20) + 'px'"
+        [attr.edit-uuid]="item.uuid"
+    >
+
+        <ng-container *ngIf="ItemService.MenuService.editing.is_opened && ItemService.MenuService.editing.uuid == item.uuid">
 
             <!-- Режим редагування: -->
             <ng-container *ngIf="!ItemService.MenuService.editing.deleting_mode">
@@ -21,8 +26,38 @@
             </ng-container>
             <!-- /Режим видалення -->
 
-    </ng-container>
-</div>
+        </ng-container>
+    </div>
+</ng-template>
+
+<ng-template #CommonEditTemplate>
+    <div
+
+        [ngClass]="['title-create-outer', ItemService.MenuService.editing.uuid == item.uuid ? 'menu active_menu' : 'menu not_active_menu']"
+        [style.margin-left]="(indent * 20) + 'px'"
+        [attr.edit-uuid]="item.uuid"
+    >
+
+        <ng-container *ngIf="ItemService.MenuService.editing.is_opened && ItemService.MenuService.editing.uuid == item.uuid">
+
+            <!-- Режим редагування: -->
+            <ng-container *ngIf="!ItemService.MenuService.editing.deleting_mode">
+                <ng-container *ngTemplateOutlet="EditModeTemplate"></ng-container>
+            </ng-container>
+            <!-- /Режим редагування: -->
+
+
+            <!-- Режим видалення: -->
+            <ng-container *ngIf="ItemService.MenuService.editing.deleting_mode">
+                <ng-container *ngTemplateOutlet="DeleteModeTemplate"></ng-container>
+            </ng-container>
+            <!-- /Режим видалення -->
+
+        </ng-container>
+    </div>
+</ng-template>
+
+
 
 
 <!--- Титул вікна: --->
@@ -121,7 +156,8 @@
 <ng-template #EditModeTemplate>
 
 
-    <div class="columns create-outer"
+    <div class="columns"
+         [ngClass]="[newItem.type != 'file' ? 'create-outer' : '']"
         [style.margin-bottom]="newItem.type == 'category' ? '20px' : '0px'"
     >
         <ng-container *ngIf="newItem.type == 'category'">
@@ -140,6 +176,10 @@
 
         <ng-container *ngIf="newItem.type == 'code'">
             <ng-container *ngTemplateOutlet="editCodeTemplate"></ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="newItem.type == 'file'">
+            <ng-container *ngTemplateOutlet="editFileTemplate"></ng-container>
         </ng-container>
 
         <!--- Кнопки: --->
@@ -538,6 +578,112 @@
 </ng-template>
 <!--
    / ШАБЛОН РЕДАГУВАННЯ КОДУ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН РЕДАГУВАННЯ ФАЙЛУ
+-->
+<ng-template #editFileTemplate>
+
+    <!--- Титул вікна редагування: --->
+    <ng-container *ngTemplateOutlet="WindowHeaderTemplate; context:{ windowTitle: 'Редагування файлу', top: '0px' }"></ng-container>
+    <!--- / Титул вікна редагування --->
+
+
+    <div class="window-body">
+        <div class="space-between" style="margin: 20px 17px;">
+            <div class="columns" style="width: 300px;">
+
+                <!-- Заголовок : -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Title:</div>
+                    <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.title"></div>
+                </div>
+                <!-- /Заголовок  -->
+
+                <!-- Опис : -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Description:</div>
+                    <div class="flex-grow"><input type="text" class="input_text" maxlength="100" [(ngModel)]="newItem.text"></div>
+                </div>
+                <!-- / Опис  -->
+
+                <!-- Теги: -->
+                <div class="columns stage">
+                    <div class="vertically-centered form-title">Теги:</div>
+                    <div class="flex-grow">
+                        <input type="text" class="input_text" [(ngModel)]="tagsString" (keyup)="changeTagsString()">
+                    </div>
+                </div>
+                <!-- /Теги -->
+
+                <!-- Теги: -->
+                <div class="rows">
+                    <div class="code-tag-in-footer" *ngFor="let tag of tagsArray" style="">
+                        {{tag}}
+                    </div>
+                </div>
+                <!-- /Теги -->
+
+
+            </div>
+
+            <div class="columns">
+
+                <!--- Кнопки переміщення і видалення: --->
+                <div class="rows-end">
+                    <div class="rows" style="margin-right: 30px;">
+                        <app-button style="margin: 0px 2px;" [icon_name]="'arrow_up'" [size]="'nano'" [color]="item.order_index == 1 ? 'transparent' : 'gray'" (click)="moveUp()"></app-button>
+                        <app-button style="margin: 0px 2px;" [icon_name]="'arrow_down'" [size]="'nano'" [color]="item.order_index == lastOrderIndex ? 'transparent' : 'gray'" (click)="moveDown()"></app-button>
+                    </div>
+
+                    <div class="columns">
+                        <app-button [text]="'Знищити'" [icon_name]="'trash'" [color]="'gray'" (click)="ItemService.MenuService.openDeleting(item.uuid)"></app-button>
+                    </div>
+                </div>
+                <!--- / Кнопки переміщення і видалення --->
+
+                <div class="rows-end" style="margin-top: 20px;">
+                    <div class="columns">
+
+                        <div class="columns stage">
+                            <div class="meta-title">uuid:</div>
+                            <div class="meta-value">{{item.uuid}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">last_update:</div>
+                            <div class="meta-value">{{item.updated_at}}</div>
+                        </div>
+
+                        <div class="columns stage">
+                            <div class="meta-title">order_index:</div>
+                            <div class="meta-value">{{item.order_index}}</div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</ng-template>
+<!--
+   / ШАБЛОН РЕДАГУВАННЯ ФАЙЛУ
 ------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------->
 <!--

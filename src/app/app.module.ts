@@ -27,6 +27,9 @@ import { ButtonComponent } from './reusable-elements/button/button.component';
 import { RedirectFromSearchDirective } from './directives/redirect-from-search.directive';
 import { ClicksDirective } from './directives/clicks.directive';
 
+import { LightgalleryModule } from 'lightgallery/angular';
+import lgZoom from 'lightgallery/plugins/zoom';
+
 @NgModule({
     declarations: [
         SafeHtmlPipe,
@@ -49,6 +52,7 @@ import { ClicksDirective } from './directives/clicks.directive';
         HttpClientModule, // <- add this
         HighlightModule,
         CodemirrorModule,
+        LightgalleryModule,
     ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [
