@@ -200,6 +200,9 @@ style="
                         <ng-container *ngTemplateOutlet="SingleCodeTemplate; context:{ $implicit: item }"></ng-container>
                     </ng-container>
 
+                    <ng-container *ngIf="item.type == 'file'">
+                        <ng-container *ngTemplateOutlet="FileTemplate; context:{ $implicit: item }"></ng-container>
+                    </ng-container>
                     <!-- / Типи дописів -->
 
 
@@ -526,3 +529,63 @@ style="
    / ШАБЛОН КОДІВ
 ------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------->
+
+<!----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+   ШАБЛОН ФАЙЛІВ
+-->
+<ng-template #FileTemplate let-item let-indent="indent">
+
+    <div class="columns">
+        <ng-container *ngTemplateOutlet="itemBreadCrumbs; context:{ $implicit: item }"></ng-container>
+
+        <div class="files-inner rows">
+            <div class="file-preview centered">
+                <ng-container *ngIf="['jpg', 'png', 'gif'].includes(item.src.split('.').pop())">
+                    <lightgallery [settings]="lightGallerySettings">
+                        <a href="{{ItemService.ConfigService.backend + '/' + item.src}}">
+                            <img alt="{{item.title}}" src="{{ItemService.ConfigService.backend + '/' + item.src}}" class="file-preview-image">
+                        </a>
+                    </lightgallery>
+                </ng-container>
+
+            </div>
+            <div class="file-info columns">
+                <div class="file-title">
+                    {{item.title}}
+                </div>
+                <div class="file-description">
+                    {{item.text}}
+                </div>
+                <div class="file-meta space-between">
+                    <div class="rows">
+                        <div class="file-extension">.{{item.src.split('.').pop()}}</div>
+                        <div class="file-size">{{ItemService.humanFileSize(item.likes)}}</div>
+                    </div>
+                    <div class="rows">
+                        <div class="file-tag" *ngFor="let tag of item.tags">{{tag}}</div>
+                    </div>
+                    <div class="rows">
+                        <div class="file-extension pointer"
+                             (click)="ItemService.downloadFile(ItemService.ConfigService.backend + '/' + item.src, item.uuid + '.' + item.src.split('.').pop())">download</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-container *ngTemplateOutlet="itemFooter; context:{ $implicit: item }"></ng-container>
+    </div>
+</ng-template>
+<!--
+   / ШАБЛОН ФАЙЛІВ
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------->
+<!--
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+--->

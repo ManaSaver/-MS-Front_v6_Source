@@ -4,11 +4,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { ItemService } from "../services/item.service";
 import { SearchService } from "../services/search.service";
+import lgZoom from "lightgallery/plugins/zoom";
+import fullscreen from "lightgallery/plugins/fullscreen";
+import rotate from "lightgallery/plugins/rotate";
 
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.css'],
+    styleUrls: [
+        './search.component.css',
+        '../category/files.component.css',
+    ],
     host: {
         '(document:keydown)': 'handleKeyboardEvents($event)'
     }
@@ -17,7 +23,14 @@ import { SearchService } from "../services/search.service";
 export class SearchComponent implements OnInit
 {
 
-
+    lightGallerySettings = {
+        plugins: [lgZoom, fullscreen, rotate],
+        speed: 100, backdropDuration: 100, defaultCaptionHeight: 1,
+        showCloseIcon: true,
+        flipHorizontal: true,
+        hideScrollbar : true,
+        licenseKey: "1234-1234-123-1234"
+    };
 
     constructor
     (
