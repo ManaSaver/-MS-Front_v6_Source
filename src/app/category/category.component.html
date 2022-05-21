@@ -879,14 +879,15 @@
 
         <div class="files-inner rows" *ngFor="let file of item.children">
             <div class="file-preview centered">
-                <ng-container *ngIf="['jpg', 'png', 'gif'].includes(file.src.split('.').pop())">
-                    <lightgallery [settings]="lightGallerySettings">
-                        <a href="{{ItemService.ConfigService.backend + '/' + file.src}}">
-                            <img alt="{{file.title}}" src="{{ItemService.ConfigService.backend + '/' + file.src}}" class="file-preview-image">
-                        </a>
-                    </lightgallery>
+                <ng-container *ngIf="file.src != null">
+                    <ng-container *ngIf="['jpg', 'png', 'gif'].includes(file.src.split('.').pop())">
+                        <lightgallery [settings]="lightGallerySettings">
+                            <a href="{{ItemService.ConfigService.backend + '/' + file.src}}">
+                                <img alt="{{file.title}}" src="{{ItemService.ConfigService.backend + '/' + file.src}}" class="file-preview-image">
+                            </a>
+                        </lightgallery>
+                    </ng-container>
                 </ng-container>
-
             </div>
             <div class="file-info columns">
                 <div class="file-title">
@@ -897,7 +898,11 @@
                 </div>
                 <div class="file-meta space-between">
                     <div class="rows">
-                        <div class="file-extension">.{{file.src.split('.').pop()}}</div>
+
+                        <div class="file-extension">
+                            <ng-container *ngIf="file.src != null">.{{file.src.split('.').pop()}}</ng-container>
+                        </div>
+
                         <div class="file-size">{{ItemService.humanFileSize(file.likes)}}</div>
                     </div>
                     <div class="rows">
