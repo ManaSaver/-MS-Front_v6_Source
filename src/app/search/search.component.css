@@ -246,3 +246,8 @@ code.hljs{padding: 0.9em }
     background-color: #002b361f;
     font-weight: bold;
 }
+
+.files-inner {
+    border-left: 1px solid #dadee3 !important;
+    border-right: 1px solid #dadee3 !important;
+}
